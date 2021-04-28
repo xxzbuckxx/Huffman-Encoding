@@ -83,11 +83,11 @@ void graph_mark_unvisited(Graph *G, uint32_t v) {
 
 void graph_print(Graph *G) {
     if (G) {
-        printf("  ");
+        printf("     ");
         // Draw Row labels
         for (uint32_t i = 0; i < VERTICES; i++) {
-            printf("%s %s%d" RESET, graph_visited(G, i) ? GRN : RED, i <= 10 ? " " : "",
-                i); // add space if single digit
+            printf("%s%d %s" RESET, graph_visited(G, i) ? GRN : RED, i,
+                i < 9 ? " " : ""); // add space if single digit
         }
         printf("\n   ");
         // Draw Row dashes

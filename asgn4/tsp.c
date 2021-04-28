@@ -1,17 +1,26 @@
-#include "graph.h"
 #include "path.h"
+#include "graph.h"
 #include "stack.h"
 #include "vertices.h"
 
 #include <inttypes.h> // PRIu32
 #include <stdio.h> // Printing
+#include <stdlib.h>
+#include <string.h> // strlen
 #include <unistd.h> // For getopt()
 
 #define OPTIONS "hvui:o:"
 
-#define HELP "chicken"
+#define HELP                                                                                       \
+    "SYNOPSIS\n    A path finding thingy.\n\nUSAGE\n    ./tsp [-hvu] [-i in path] [-o out "        \
+    "path]\n\nOPTIONS\n    -h              Display program help and usage.\n    -v              "  \
+    "Print all Hamiltonian paths found.\n    -u				Specify the graph to be "                       \
+    "undirected.\n    -i in path		Specify input file path.\n    -o out path	"                      \
+    "	Specify output file path\n"
 
-#define FILE_NOT_FOUND "File not found ;("
+#define FILE_NOT_FOUND "File not found ;(\n"
+
+#define BUFFER_SIZE 1024
 
 //
 // Main execution
@@ -30,6 +39,7 @@ int main(int argc, char **argv) {
     bool directed = 1; // false
 
     //-------- PARSE --------//
+    // ARGUMENTS
     int opt = 0;
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
         switch (opt) {
@@ -44,22 +54,45 @@ int main(int argc, char **argv) {
             }
             break;
         case 'o':
-            if ((file_out = freopen(optarg, "w", stdout)) == NULL) {
+            if ((file_out = fopen(optarg, "w")) == NULL) {
                 printf(FILE_NOT_FOUND);
                 return 1;
             }
             break;
-        default: return 1; //ERROR
+        default: return 1; // ERROR
         }
     }
 
-    printf("CHICKEN");
-    Graph *G = graph_create(13, 0);
-    graph_add_edge(G, 3, 5, 7);
-    graph_mark_visited(G, 3);
-    graph_mark_visited(G, 5);
-    printf("%d vertices\n", graph_vertices(G));
+    // CITIES
+    char buffer[BUFFER_SIZE];
+    uint32_t number_nodes = 0;
+
+    if ((number_nodes = strtol(fgets(buffer, BUFFER_SIZE, file_in), NULL, 10)) == 0) {
+        printf("Input configured incorrectly ;(\n");
+        return 1; // ERROR
+    }
+
+    char *cities[number_nodes]; // should use malloc
+
+    // store cities
+    for (uint32_t i = 0; i < number_nodes && fgets(buffer, BUFFER_SIZE, file_in) != NULL; i++) {
+        buffer[strlen(buffer) - 1] = '\0';
+        char *city = (char *) malloc(50); 
+        strcpy(city, buffer);
+        cities[i] = city;
+    }
+
+    Graph *G = graph_create(number_nodes, directed);
+
+    uint32_t i, j, w;
+
+    while (fscanf(file_in, "%u %d %d", &i, &j, &w) != EOF) {
+        graph_add_edge(G, i, j, w);
+    }
+
     graph_print(G);
+
+
     fclose(file_in);
     fclose(file_out);
     return 0;
