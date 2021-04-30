@@ -1,4 +1,5 @@
 #include "path.h"
+#include "search.h"
 #include "graph.h"
 #include "stack.h"
 #include "vertices.h"
@@ -78,7 +79,7 @@ int main(int argc, char **argv) {
     for (uint32_t i = 0; i < number_nodes && fgets(buffer, BUFFER_SIZE, file_in) != NULL; i++) {
         buffer[strlen(buffer) - 1] = '\0';
         char *city = (char *) malloc(50); 
-        strcpy(city, buffer);
+        strcpy(city, buffer); // DO NOT USE STRING COPY
         cities[i] = city;
     }
 
@@ -90,9 +91,31 @@ int main(int argc, char **argv) {
         graph_add_edge(G, i, j, w);
     }
 
-    graph_print(G);
+    graph_mark_visited(G, 4);
 
+    // BEGIN SEARCH
 
+    ////// RECURISON
+    /* Path *curr = path_create(); */
+    /* Path *shortest = path_create(); */
+    Path *p = path_create();
+    Graph *g = graph_create(5, false);
+
+    path_push_vertex(p, 0, g);
+    printf("path is %d long\n", path_length(p));
+    path_push_vertex(p, 3, g);
+    printf("path is %d long\n", path_length(p));
+
+    path_print(p, file_out, cities);
+    /* DFS(G, START_VERTEX, curr, shortest, cities, file_out); */ 
+    /////
+
+    // FREE MEMORY FROM CITIES
+    for (i = 0; i < number_nodes; i++) {
+        free(cities[i]);
+    }
+    
+    graph_delete(&G);
     fclose(file_in);
     fclose(file_out);
     return 0;

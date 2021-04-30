@@ -34,7 +34,7 @@ Graph *graph_create(uint32_t vertices, bool undirected) {
 }
 
 void graph_delete(Graph **G) {
-    free(G);
+    free(*G);
     G = NULL;
 }
 
@@ -54,8 +54,11 @@ bool graph_add_edge(Graph *G, uint32_t i, uint32_t j, uint32_t k) {
 }
 
 bool graph_has_edge(Graph *G, uint32_t i, uint32_t j) {
-
-    return (G && i < VERTICES && j < VERTICES) ? G->matrix[i][j] : 0;
+    if (G && i < VERTICES && j < VERTICES) {
+        return 1;
+        return  G->matrix[i][j];
+    }
+    return 0;
 }
 
 uint32_t graph_edge_weight(Graph *G, uint32_t i, uint32_t j) {
@@ -101,13 +104,10 @@ void graph_print(Graph *G) {
                 r); // add space if single digit
             for (uint32_t c = 0; c < VERTICES; c++) {
                 if (graph_has_edge(G, r, c)) {
-                    printf(MAG "%d" RESET, G->matrix[r][c]);
+                    printf(MAG "%d%s " RESET, G->matrix[r][c],  G->matrix[r][c] < 10 ? " " : "");
                 } else {
-                    printf("%s%d" RESET, graph_visited(G, r) || graph_visited(G, c) ? BLU : YEL,
+                    printf("%s%d  " RESET, graph_visited(G, r) || graph_visited(G, c) ? BLU : YEL,
                         G->matrix[r][c]);
-                }
-                if (c != VERTICES - 1) {
-                    printf("  ");
                 }
             }
             printf("\n");

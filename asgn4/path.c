@@ -30,17 +30,20 @@ void path_delete(Path **p) {
 }
 
 bool path_push_vertex(Path *p, uint32_t v, Graph *G) {
+    printf("push part\n");
     if (!stack_full(p->vertices)) {
         if (!stack_empty(p->vertices)) {
             uint32_t *top = NULL; 
+            printf("boutta peak into path stack\n");
             stack_peek(p->vertices, top);
-            p->length += graph_edge_weight(G, *top, v);
+            printf("%d", *top);
+            /* p->length += graph_edge_weight(G, *top, v); */
         } else {
             p->length += graph_edge_weight(G, START_VERTEX, v);
         }
-        if (stack_push(p->vertices, v)) {
+        /* if (stack_push(p->vertices, v)) { */
             return 1; // true
-        }
+        /* } */
     }
     return 0; // false 
 }

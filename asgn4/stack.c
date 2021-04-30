@@ -116,12 +116,15 @@ bool stack_pop(Stack *s, uint32_t *x) {
 }
 
 bool stack_peek(Stack *s, uint32_t *x) {
+    printf("peaking...");
     if (stack_empty(s)) {
         return false;
     } else {
-        *x = s->items[s->top];
+        printf("top %d", s->top - 1);
+        *x = s->items[s->top - 1];
         return true;
     }
+    return true;
 }
 
 //

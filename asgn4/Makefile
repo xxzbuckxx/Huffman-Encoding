@@ -1,7 +1,7 @@
 # Makefile compiling (lines 2-16) adapted from Proffessor Long https://piazza.com/class/kmfs2bmdr9syz?cid=63
 EXEC = tsp
 
-SOURCES = tsp.c graph.c path.c stack.c
+SOURCES = tsp.c graph.c path.c stack.c search.c
 OBJECTS = $(SOURCES:%.c=%.o)
 
 CC=clang
