@@ -12,7 +12,7 @@
 
 \title{%
 \textbf{Assignment 4 \\ 
-The Circumnavigaations of Denver Long \\
+The Circumnavigations of Denver Long \\
 \large DESIGN DOCUMENT} }
 \author{Zack Traczyk \\ CSE13S - Spring 2021}
 \date{Due: May 2\textsuperscript{nd} at 11:59 pm}
@@ -25,7 +25,15 @@ The Circumnavigaations of Denver Long \\
 
 	\section{Objective}
 
+	The program (tsp) calculates the shortest route between a given vertices.
+	The program can optionally read and write to a file.
+
 	\section{Given}
+
+	\begin{itemize}
+		\item{Header files for stack, path, and graph}
+		\item{Pseudocode for recursive search}
+	\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -42,6 +50,31 @@ The Circumnavigaations of Denver Long \\
 		\item{o : outfile; the output file to print to (default is stdout)}
 	\end{itemize}
 
+	\subsection{Parse}
+
 	No need to use a set, just set defaults than change on parse.
+
+	After parsing program arguments, input file is parse.
+	The first line grabs number of iterations to store string pointers of strings on following lines.
+
+	Next a graph is constructed and the following vertices are stored.
+
+	\subsection{Execute}
+
+	Calls ADT in search.c passing the parsed array of string pointers and graph.
+
+	\section{Algorithm implementation}
+
+	\subsection{Stack, Path, Graph}
+
+	Given the pseudocode stack, path, and graph implementation is straight forward.
+
+	\subsection{Search}
+
+	search.c contains two functions: find adjacent edges given a vertex, and recursively find a Hamiltonian path (DFS).
+
+	Adjacent edges are found by finding seeing what edges exist in given row (vertex) in graph.
+
+	ADT uses the psedocode in the lab doc.
 
 	\end{document}
