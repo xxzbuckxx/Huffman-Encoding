@@ -116,17 +116,23 @@ bool stack_pop(Stack *s, uint32_t *x) {
 }
 
 bool stack_peek(Stack *s, uint32_t *x) {
-    printf("peaking...");
     if (stack_empty(s)) {
         return false;
     } else {
-        printf("top %d", s->top - 1);
         *x = s->items[s->top - 1];
         return true;
     }
     return true;
 }
 
+void stack_copy(Stack *dst, Stack *src) {
+    dst->top = src->top;
+    dst->capacity = src->capacity;
+    for (uint32_t i = 0; i < dst->capacity; i++) {
+        dst->items[i] = src->items[i];
+    }
+    return;
+}
 //
 // Prints elements of the stack
 //

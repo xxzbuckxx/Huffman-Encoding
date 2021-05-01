@@ -1,6 +1,6 @@
+#include "graph.h"
 #include "path.h"
 #include "search.h"
-#include "graph.h"
 #include "stack.h"
 #include "vertices.h"
 
@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
     // store cities
     for (uint32_t i = 0; i < number_nodes && fgets(buffer, BUFFER_SIZE, file_in) != NULL; i++) {
         buffer[strlen(buffer) - 1] = '\0';
-        char *city = (char *) malloc(50); 
+        char *city = (char *) malloc(50);
         strcpy(city, buffer); // DO NOT USE STRING COPY
         cities[i] = city;
     }
@@ -91,30 +91,33 @@ int main(int argc, char **argv) {
         graph_add_edge(G, i, j, w);
     }
 
-    graph_mark_visited(G, 4);
-
     // BEGIN SEARCH
 
     ////// RECURISON
-    /* Path *curr = path_create(); */
-    /* Path *shortest = path_create(); */
-    Path *p = path_create();
-    Graph *g = graph_create(5, false);
+    Path *curr = path_create();
+    Path *shortest = path_create();
 
-    path_push_vertex(p, 0, g);
-    printf("path is %d long\n", path_length(p));
-    path_push_vertex(p, 3, g);
-    printf("path is %d long\n", path_length(p));
+    DFS(G, START_VERTEX, curr, shortest, cities, file_out);
 
-    path_print(p, file_out, cities);
-    /* DFS(G, START_VERTEX, curr, shortest, cities, file_out); */ 
     /////
+
+    printf("shortest\n");
+    printf("Length: %d\n", path_length(shortest));
+    uint32_t *adj = (uint32_t *) malloc(number_nodes * sizeof(uint32_t));
+    uint32_t adj_n = adjacent_edges(G, 0, adj);
+
+    for (uint32_t i = 0; i < adj_n; i++) {
+        printf("%s is possible\n", cities[adj[i]]);
+    }
+
+    path_print(shortest, file_out, cities);
 
     // FREE MEMORY FROM CITIES
     for (i = 0; i < number_nodes; i++) {
         free(cities[i]);
     }
-    
+
+    /* path_delete(&p); */
     graph_delete(&G);
     fclose(file_in);
     fclose(file_out);
