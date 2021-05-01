@@ -3,6 +3,7 @@
 #include "search.h"
 #include "stack.h"
 #include "vertices.h"
+#include "search.h"
 
 #include <inttypes.h> // PRIu32
 #include <stdio.h> // Printing
@@ -23,6 +24,7 @@
 
 #define BUFFER_SIZE 1024
 
+uint64_t calls = 0;
 //
 // Main execution
 //
@@ -63,6 +65,8 @@ int main(int argc, char **argv) {
         default: return 1; // ERROR
         }
     }
+
+    calls = 0;
 
     // CITIES
     char buffer[BUFFER_SIZE];
@@ -105,6 +109,7 @@ int main(int argc, char **argv) {
     printf("Length: %d\n", path_length(shortest));
     uint32_t *adj = (uint32_t *) malloc(number_nodes * sizeof(uint32_t));
     uint32_t adj_n = adjacent_edges(G, 0, adj);
+    printf("Total recursive calls: %lu\n", calls);
 
     for (uint32_t i = 0; i < adj_n; i++) {
         printf("%s is possible\n", cities[adj[i]]);
