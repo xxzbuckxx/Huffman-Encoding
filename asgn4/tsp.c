@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
     FILE *file_in = stdin;
     FILE *file_out = stdout;
     bool verbose = 1; // false
-    bool directed = 1; // false
+    bool directed = 0; // false
 
     //-------- PARSE --------//
     // ARGUMENTS
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
         switch (opt) {
         case 'h': printf(HELP); break;
         case 'v': verbose = 0; break;
-        case 'u': directed = 0; break;
+        case 'u': directed = 1; break;
         // https://www.tutorialspoint.com/c_standard_library/c_function_freopen.htm
         case 'i':
             if ((file_in = fopen(optarg, "r")) == NULL) {
@@ -105,17 +105,10 @@ int main(int argc, char **argv) {
 
     /////
 
-    printf("shortest\n");
-    printf("Length: %d\n", path_length(shortest));
-    uint32_t *adj = (uint32_t *) malloc(number_nodes * sizeof(uint32_t));
-    uint32_t adj_n = adjacent_edges(G, 0, adj);
-    printf("Total recursive calls: %lu\n", calls);
-
-    for (uint32_t i = 0; i < adj_n; i++) {
-        printf("%s is possible\n", cities[adj[i]]);
-    }
-
+    /* printf("shortest\n"); */
+    printf("Length: %d\nPath: ", path_length(shortest));
     path_print(shortest, file_out, cities);
+    printf("Total recursive calls: %lu\n", calls);
 
     // FREE MEMORY FROM CITIES
     for (i = 0; i < number_nodes; i++) {

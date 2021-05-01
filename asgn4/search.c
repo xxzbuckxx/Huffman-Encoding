@@ -54,21 +54,20 @@ void DFS(Graph *G, uint32_t v, Path *curr, Path *shortest, char *cities[], FILE 
     if (path_vertices(curr) == graph_vertices(G) && graph_has_edge(G, v, START_VERTEX)) {
         path_push_vertex(curr, START_VERTEX, G);
         if (path_length(shortest) == 0 || path_length(curr) < path_length(shortest)) {
-            printf("\nBOTTOM\n");
-            printf("%d long\n", path_length(curr));
+            /* printf("\nBOTTOM\n"); */
+            printf("Length: %d\nPath: ", path_length(curr));
             path_print(curr, outfile, cities);
-            printf("\n");
             /* graph_print(G); */
             path_copy(shortest, curr);
         }
         uint32_t trash = 0;
         path_pop_vertex(curr, &trash, G);
     } else if (path_length(shortest) == 0 || path_length(curr) < path_length(shortest)) {
-        printf("currently path has %d destinations and is %d long:\n", path_vertices(curr),
-            path_length(curr));
+        /* printf("currently path has %d destinations and is %d long:\n", path_vertices(curr), */
+            /* path_length(curr)); */
         for (uint32_t i = 0; i < adj_n; i++) {
             /* printf("    %s has edge?\n", cities[adj[i]]); */
-            printf("%d out of %d\n", i, adj_n);
+            /* printf("%d out of %d\n", i, adj_n); */
             if (!graph_visited(G, adj[i])) {
                 /* printf("  YEAH\n"); */
                 /* printf("Recursive %s\n", cities[adj[i]]); */
