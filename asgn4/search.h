@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 extern uint64_t calls;
+extern bool verbose;
 
 uint32_t adjacent_edges(Graph *G, uint32_t v, uint32_t *adjacent);
 
