@@ -27,17 +27,7 @@
 uint64_t calls = 0;
 bool verbose = false;
 
-//
-// Frees allocated memory from cities array
-//
-// cities: address to allocated character arrays for city names
-// nodes: number of allocated character arrays to free
-//
-void free_cities(char *cities[], uint32_t nodes) {
-    for (uint32_t i = 0; i < nodes; i++) {
-        free(cities[i]);
-    }
-}
+void free_cities(char *cities[], uint32_t nodes);
 
 //
 // Main execution
@@ -145,4 +135,16 @@ int main(int argc, char **argv) {
     graph_delete(&G);
     fclose(file_out);
     return 0;
+}
+
+//
+// Frees allocated memory from cities array
+//
+// cities: address to allocated character arrays for city names
+// nodes: number of allocated character arrays to free
+//
+void free_cities(char *cities[], uint32_t nodes) {
+    for (uint32_t i = 0; i < nodes; i++) {
+        free(cities[i]);
+    }
 }
