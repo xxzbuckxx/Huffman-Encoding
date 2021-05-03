@@ -52,17 +52,19 @@ The Circumnavigations of Denver Long \\
 
 	\subsection{Parse}
 
-	No need to use a set, just set defaults than change on parse.
+	When parsing command arguments a set is not needed to store flags, since there is only one main function of the program and inputs slightly adapt the functionality.
+	After program arguments are parsed, the input file needs to be parsed.
+	File inputs are parsed by first grabbing the number of nodes,
+	then iterating that many times to store the following strings as names of the nodes.
+	Next, edges are parsed until the end of the file, overwriting edges that have already been defined.
+	Edges are added to a graph datatype as they are parsed.
 
-	After parsing program arguments, input file is parse.
-	The first line grabs number of iterations to store string pointers of strings on following lines.
-
-	Next a graph is constructed and the following vertices are stored.
+	After parsing the graph is searched, see section \emph{Execute}, then the memory is freed.
 
 	\subsection{Execute}
 
-	Calls ADT in search.c passing the parsed array of string pointers and graph.
-
+	Execution starts by calling function DFS (depth first search) in search.c, passing the parsed array of string pointers and the graph.
+	
 	\section{Algorithm implementation}
 
 	\subsection{Stack, Path, Graph}
@@ -71,10 +73,47 @@ The Circumnavigations of Denver Long \\
 
 	\subsection{Search}
 
-	search.c contains two functions: find adjacent edges given a vertex, and recursively find a Hamiltonian path (DFS).
+	Search.c contains two functions: find adjacent edges given a vertex, and recursively find a Hamiltonian path (DFS).
 
 	Adjacent edges are found by finding seeing what edges exist in given row (vertex) in graph.
 
-	ADT uses the psedocode in the lab doc.
+	DFS uses the psedocode in the lab doc.
+	First, a global variable is incremented at the beginning of every DFS function call.
+	If it is the first call, the starting vertex is pushed to the stack.
+	Next adjacent edges are found by calling the adjacent edges function and passing an array to store into and returning the number of vertices found.
+	Then the main recursion part of the program is started.
 
+	Either the program is at its base case, the path has hit every node and path length and graph length are equal, or the program is searching through more adjacent edges. When the program is at its base case, it checks to see if the current path is shorter than the current shortest array. If it is, it stores it. Here is where the verbose option would print the path and length. If there are still more adjacent edges, the program iterates through these edges to check if they can be searched. With each edge, the program checks if adding it would result in a longer path than the current longest. If so the edge is skipped, if not then DFS is called recursively where the whole process is repeated. After a DFS call, the searched vertex is popped and mark as unvisited. Pseudocode is in \vref{execute}
+
+
+    \begin{algorithm}
+		increment calls counter\;
+		\If{first call}{
+			add vertex to path according to graph\;
+		}
+		mark vertex as visited in graph\;
+		edge number = adjacent\_edges(graph, vertex to check, array to store in)\;
+		\eIf{path has hit every node}{
+			push vertex to path\;
+			\If{path is shortest}{
+				\If{verbose argument set}{
+					print path\;
+				}
+				copy shortest path\;
+			}
+			pop vertex from path\;
+		}{
+			\For{every adjacent vertex}{
+				\If{edge not visited}{
+					push adjacent vertex to path\;
+					\If{if path length is not longer than shortest}{
+						recursive call to DFS\;
+					}
+					pop adjacent vertex from path\;
+				}
+			}
+		}
+		add vertex to path according to graph\;
+        \caption{DFS}\label{execute}
+    \end{algorithm}
 	\end{document}
