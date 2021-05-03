@@ -77,6 +77,3 @@ This document details how the program was designed. This includes:
 
 .DESIGN contains the LaTeX document for the design document
 
-.WRITEUP contains the LaTeX document for the writeup as well as the graph jpgs
-and bash scripts used to produce them
- 
