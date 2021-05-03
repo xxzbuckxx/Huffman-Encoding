@@ -67,7 +67,6 @@ int main(int argc, char **argv) {
     int opt = 0;
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
         switch (opt) {
-        // NOTE:  using integers is kind of ugly lowkey might change
         case 'a': run_all = 1; break; // all algorithms
         case 'b': execute = set_insert(execute, 0); break; // bubble
         case 's': execute = set_insert(execute, 1); break; // shell

@@ -1,0 +1,89 @@
+\documentclass[12pt]{article}
+\usepackage{charter} % font
+\usepackage[margin=1in]{geometry} % margin
+\usepackage{varioref} % "on the next page" label decoration
+\usepackage{hyperref} % hyperlinks
+\usepackage{enumitem} % Enumeration
+
+\usepackage[lined,dotocloa]{algorithm2e} % Pseudocode
+\labelformat{algocf}{\textit{alg.}\,(#1)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{%
+\textbf{Assignment 5 \\ 
+Hamming Codes \\
+\large DESIGN DOCUMENT} }
+\author{Zack Traczyk \\ CSE13S - Spring 2021}
+\date{Due: May 9\textsuperscript{th} at 11:59 pm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    \begin{document}
+
+    \maketitle
+
+	\section{Objective}
+
+
+	\section{Given}
+
+	\begin{itemize}
+		\item{Header files for stack, path, and graph}
+		\item{Pseudocode for recursive search}
+	\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\section{Test Harness}
+
+
+	\begin{itemize}
+		\item{h : Command line options }
+		\item{v : Verbose printing; prints all Hamiltonian paths found as well
+			as total number of recursive calls to dfs()}
+		\item{i : infile; the input file contaiing the cities and edges of a graph (default should be stdin)}
+		\item{o : outfile; the output file to print to (default is stdout)}
+	\end{itemize}
+
+	\subsection{Parse}
+
+	\subsection{Execute}
+
+	\section{Algorithm implementation}
+
+	
+
+
+    \begin{algorithm}
+		increment calls counter\;
+		\If{first call}{
+			add vertex to path according to graph\;
+		}
+		mark vertex as visited in graph\;
+		edge number = adjacent\_edges(graph, vertex to check, array to store in)\;
+		\eIf{path has hit every node}{
+			push vertex to path\;
+			\If{path is shortest}{
+				\If{verbose argument set}{
+					print path\;
+				}
+				copy shortest path\;
+			}
+			pop vertex from path\;
+		}{
+			\For{every adjacent vertex}{
+				\If{edge not visited}{
+					push adjacent vertex to path\;
+					\If{if path length is not longer than shortest}{
+						recursive call to DFS\;
+					}
+					pop adjacent vertex from path\;
+				}
+			}
+		}
+		add vertex to path according to graph\;
+        \caption{DFS}\label{execute}
+    \end{algorithm}
+
+	\end{document}
