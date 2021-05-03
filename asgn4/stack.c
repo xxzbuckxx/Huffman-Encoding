@@ -1,15 +1,15 @@
 #include "stack.h"
 
 #include <inttypes.h> // PRIu32
-#include <stdbool.h>
+#include <stdbool.h> // true and false
 #include <stdint.h> // extended integer library
-#include <stdio.h> // Print
-#include <stdlib.h> // Malloc
+#include <stdio.h> // print
+#include <stdlib.h> // malloc
 
 //
 // Structure for defining stack data structure
 //
-// Function taken from Professor Darrell Long (Stacks and Queues 4/19/21)
+// Structure taken from Professor Darrell Long (Stacks and Queues Lecture 4/19/21)
 //
 typedef struct Stack {
     uint32_t top; // index of the next empty slot.
@@ -21,7 +21,7 @@ typedef struct Stack {
 // Creates a stack
 //
 // capacity: max size of the stack
-// Function taken from Professor Darrell Long (Stacks and Queues 4/19/21)
+// Function taken from Professor Darrell Long (Stacks and Queues Lecture 4/19/21)
 //
 Stack *stack_create(uint32_t capacity) {
     Stack *s = (Stack *) malloc(sizeof(Stack)); // allocate memory for stack structure
@@ -41,8 +41,8 @@ Stack *stack_create(uint32_t capacity) {
 //
 // Deletes a stack
 //
-// s: a stack to delete
-// Function taken from Professor Darrell Long (Stacks and Queues 4/19/21)
+// s: the address of the stack to delete
+// Function taken from Professor Darrell Long (Stacks and Queues Lecture 4/19/21)
 //
 void stack_delete(Stack **s) {
     if (*s && (*s)->items) { // if stack exists and has items
@@ -56,8 +56,8 @@ void stack_delete(Stack **s) {
 //
 // Returns if stack is empty or not
 //
-// s: a stack to check
-// Function taken from Professor Darrell Long (Stacks and Queues 4/19/21)
+// s: the address of the stack to check
+// Function taken from Professor Darrell Long (Stacks and Queues Lecture 4/19/21)
 //
 bool stack_empty(Stack *s) {
     return s->top == 0;
@@ -66,9 +66,8 @@ bool stack_empty(Stack *s) {
 //
 // Returns if stack is full or not
 //
-// s: stack to test
-//
-// Function taken from Professor Darrell Long (Stacks and Queues 4/19/21)
+// s: the address of the stack to test
+// Function taken from Professor Darrell Long (Stacks and Queues Lecture 4/19/21)
 //
 bool stack_full(Stack *s) {
     return s->top == s->capacity;
@@ -77,8 +76,8 @@ bool stack_full(Stack *s) {
 //
 // Returns size of the stack
 //
-// s: the stack to return the size of
-// Function taken from Professor Darrell Long (Stacks and Queues 4/19/21)
+// s: the address of the stack to return the size of
+// Function taken from Professor Darrell Long (Stacks and Queues Lecture 4/19/21)
 //
 uint32_t stack_size(Stack *s) {
     return (s && s->items) ? s->top : (uint32_t) -1; //if stack exists and has items
@@ -87,9 +86,9 @@ uint32_t stack_size(Stack *s) {
 //
 // Adds the given item to the top of the stack and returns if successful
 //
-// s: stack to push item to
+// s: the address of the stack to push item to
 // x: item to add to stack
-// Function taken from Professor Darrell Long (Stacks and Queues 4/19/21)
+// Function taken from Professor Darrell Long (Stacks and Queues Lecture 4/19/21)
 //
 bool stack_push(Stack *s, uint32_t x) {
     if (stack_full(s)) { // can not add to a full stack
@@ -103,9 +102,10 @@ bool stack_push(Stack *s, uint32_t x) {
 //
 // Removes last item on the stack and stores returns the
 //
-// s: the stack to pop from
+// s: the address of the stack to pop from
 // x: the address to store the popped value
-// Function taken from Professor Darrell Long (Stacks and Queues 4/19/21)
+// Function taken from Professor Darrell Long (Stacks and Queues Lecture 4/19/21)
+//
 bool stack_pop(Stack *s, uint32_t *x) {
     if (stack_empty(s)) { // can not pop from an empty stack
         return false;
@@ -115,6 +115,12 @@ bool stack_pop(Stack *s, uint32_t *x) {
     return true;
 }
 
+//
+// Gives the top element of the stack without popping
+//
+// s: the address of the stack to peek from
+// x: the address to store the peeked value
+//
 bool stack_peek(Stack *s, uint32_t *x) {
     if (stack_empty(s)) {
         return false;
@@ -125,6 +131,12 @@ bool stack_peek(Stack *s, uint32_t *x) {
     return true;
 }
 
+//
+// Copies a given stack
+//
+// dst: the address to where the stack should be copied
+// src: the address of the stack to be copied
+//
 void stack_copy(Stack *dst, Stack *src) {
     dst->top = src->top;
     dst->capacity = src->capacity;
@@ -133,11 +145,14 @@ void stack_copy(Stack *dst, Stack *src) {
     }
     return;
 }
+
 //
 // Prints elements of the stack
 //
 // s: the stack to print
-// Function given by Professor Darrell Long in Lab Document
+// outfile: file to print to
+// cities: address to addresses to city names
+// Function given by Professor Darrell Long in Lab Document (Circumnavigations of Denver Long)
 //
 void stack_print(Stack *s, FILE *outfile, char *cities[]) {
     for (uint32_t i = 0; i < s->top; i += 1) { // iterate through item indices

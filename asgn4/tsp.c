@@ -3,7 +3,6 @@
 #include "search.h"
 #include "stack.h"
 #include "vertices.h"
-#include "search.h"
 
 #include <inttypes.h> // PRIu32
 #include <stdio.h> // Printing
@@ -24,19 +23,31 @@
 
 #define BUFFER_SIZE 1024
 
-// global variable definitions
+// Global variable definitions
 uint64_t calls = 0;
 bool verbose = false;
+
+//
+// Frees allocated memory from cities array
+//
+// cities: address to allocated character arrays for city names
+// nodes: number of allocated character arrays to free
+//
+void free_cities(char *cities[], uint32_t nodes) {
+    for (uint32_t i = 0; i < nodes; i++) {
+        free(cities[i]);
+    }
+}
 
 //
 // Main execution
 //
 int main(int argc, char **argv) {
 
-    // if no arguments given
+    // If no arguments given
     if (argc < 2) {
         printf(HELP);
-        return 1;
+        return 1; // error
     }
 
     FILE *file_in = stdin;
@@ -44,83 +55,94 @@ int main(int argc, char **argv) {
     bool directed = 0; // false
 
     //-------- PARSE --------//
-    // ARGUMENTS
+
+    // Parse program arguments
     int opt = 0;
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
         switch (opt) {
         case 'h': printf(HELP); break;
         case 'v': verbose = true; break;
         case 'u': directed = 1; break;
-        // https://www.tutorialspoint.com/c_standard_library/c_function_freopen.htm
         case 'i':
             if ((file_in = fopen(optarg, "r")) == NULL) {
                 printf(FILE_NOT_FOUND);
-                return 1;
+                return 1; // error
             }
             break;
         case 'o':
             if ((file_out = fopen(optarg, "w")) == NULL) {
                 printf(FILE_NOT_FOUND);
-                return 1;
+                return 1; // error
             }
             break;
-        default: return 1; // ERROR
+        default: return 1; // error
         }
     }
-
-    calls = 0;
 
     // CITIES
     char buffer[BUFFER_SIZE];
     uint32_t number_nodes = 0;
 
     if ((number_nodes = strtol(fgets(buffer, BUFFER_SIZE, file_in), NULL, 10)) == 0) {
-        printf("Input configured incorrectly ;(\n");
-        return 1; // ERROR
+        printf("There's nowhere to go.\n");
+        return 1; // error
     }
 
     char *cities[number_nodes]; // should use malloc
 
     // store cities
-    for (uint32_t i = 0; i < number_nodes && fgets(buffer, BUFFER_SIZE, file_in) != NULL; i++) {
-        buffer[strlen(buffer) - 1] = '\0';
-        char *city = (char *) malloc(50);
-        strcpy(city, buffer); // DO NOT USE STRING COPY
-        cities[i] = city;
+    for (uint32_t i = 0; i < number_nodes; i++) {
+        if (fgets(buffer, BUFFER_SIZE, file_in) != NULL) {
+            buffer[strlen(buffer) - 1] = '\0';
+            char *city = (char *) malloc(50);
+            strcpy(city, buffer); // DO NOT USE STRING COPY
+            cities[i] = city;
+        } else {
+            free_cities(cities, i);
+            printf("Incorrectly formatted input ;(\n");
+            return 1; // error
+        }
     }
 
-    Graph *G = graph_create(number_nodes, directed);
+    Graph *G = graph_create(number_nodes, directed); // vertex adjacency graph
 
-    uint32_t i, j, w;
-
-    while (fscanf(file_in, "%u %d %d", &i, &j, &w) != EOF) {
-        graph_add_edge(G, i, j, w);
+    int i, j, w;
+    int returned = 0;
+    while ((returned = fscanf(file_in, "%d %d %d", &i, &j, &w)) != EOF) {
+        if (!graph_add_edge(G, i, j, w) || returned < 3) {
+            free_cities(cities, number_nodes);
+            printf("Error: malformed edge.\n");
+            return 1; // error
+        }
     }
 
-    // BEGIN SEARCH
+    fclose(file_in); // close input file (done scanning)
 
-    ////// RECURISON
-    Path *curr = path_create();
-    Path *shortest = path_create();
+    //-------- RECURSION  --------//
 
-    DFS(G, START_VERTEX, curr, shortest, cities, file_out);
+    calls = 0; // number of recursive calls
 
-    /////
+    Path *curr = path_create(); // path that DFS is currently checking
+    Path *shortest = path_create(); // shortest path
 
-    /* printf("shortest\n"); */
-    fprintf(file_out, "Length: %d\nPath: ", path_length(shortest));
-    path_print(shortest, file_out, cities);
-    fprintf(file_out, "Total recursive calls: %lu\n", calls);
+    DFS(G, START_VERTEX, curr, shortest, cities, file_out); // recursive depth first search
 
-    // FREE MEMORY FROM CITIES
-    for (i = 0; i < number_nodes; i++) {
-        free(cities[i]);
+    // Print shortest path
+    if (path_vertices(shortest) > 0) { // found a shortest path
+        fprintf(file_out, "Path length: %d\nPath: ", path_length(shortest));
+        path_print(shortest, file_out, cities);
+        fprintf(file_out, "Total recursive calls: %lu\n", calls);
+    } else { // no shortest path found
+        fprintf(file_out, "There's nowhere to go.\n");
     }
 
+    //-------- MEMORY FREE --------//
+
+    // Free all allocated memory
+    free_cities(cities, number_nodes);
     path_delete(&shortest);
     path_delete(&curr);
     graph_delete(&G);
-    fclose(file_in);
     fclose(file_out);
     return 0;
 }

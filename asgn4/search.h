@@ -1,5 +1,6 @@
 #include "graph.h"
 #include "path.h"
+
 #include <inttypes.h> // PRIu32
 #include <stdbool.h>
 
