@@ -16,7 +16,6 @@ int main(int argc, char **argv) {
         return 1; // error
     }
 
-
     FILE *file_in = stdin;
     FILE *file_out = stdout;
 

@@ -1,22 +1,27 @@
 # Makefile compiling (lines 2-16) adapted from Proffessor Long https://piazza.com/class/kmfs2bmdr9syz?cid=63
-EXEC = tsp
-
-SOURCES = tsp.c graph.c path.c stack.c search.c
-OBJECTS = $(SOURCES:%.c=%.o)
 
 CC=clang
 CFLAGS=-Wall -Wextra -Werror -Wpedantic
 
-all: $(EXEC)
+all: encode decode error entropy
 
-$(EXEC): $(OBJECTS)
-	$(CC) -o $@ $^ $(LFLAGS)
+encode:
+	$(CC) $(CFLAGS) -o encode.c bv.c bm.c hamming.c
 
-%.o: %.clean
-	$(CC) $(CFLAGS) -c $<
+decode:
+	$(CC) $(CFLAGS) -o decode.c bv.c bm.c hamming.c
+
+error:
+	$(CC) $(CFLAGS) -o error.c bv.c bm.c hamming.c
+
+entropy:
+	$(CC) $(CFLAGS) -o entropy.c bv.c bm.c hamming.c
 
 clean:
 	rm -f tsp *.o valgrind-out.txt
+
+bm:
+	$(CC) $(CFLAGS) -o bm bm.c bv.c
 
 format:
 	clang-format -i -style=file *.[ch]
@@ -32,3 +37,4 @@ leak-check: clean all
 
 scan-build: clean
 	scan-build make
+
