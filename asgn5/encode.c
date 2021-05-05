@@ -1,7 +1,7 @@
 #include "bm.h"
-#include "translator.h"
 #include "hamming.h"
 #include "nibble.h"
+#include "translator.h"
 
 #include <stdbool.h>
 #include <stdio.h> // Printing
@@ -67,7 +67,6 @@ int main(int argc, char **argv) {
 
     /* BitMatrix *Ht = bm_create_decode(); */
 
-
     // while data still in file:
     // Read a byte using fgetc()
     // Generate Hamming(8,4) for both upper and lower nubble using ham_encode()
@@ -75,6 +74,7 @@ int main(int argc, char **argv) {
     //      Lower first then upper
     //
 
+    bm_delete(&G);
     fclose(file_in);
     fclose(file_out);
     return 0;

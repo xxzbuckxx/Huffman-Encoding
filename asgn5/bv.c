@@ -13,7 +13,7 @@ BitVector *bv_create(uint32_t length) {
     BitVector *v = (BitVector *) malloc(sizeof(BitVector));
     if (v) {
         v->length = length;
-        v->vector = (uint8_t *) calloc(length, sizeof(uint8_t));
+        v->vector = (uint8_t *) malloc(length);
         if (!v->vector) {
             free(v);
             v = NULL;
