@@ -1,5 +1,7 @@
 #include "bm.h"
 #include "translator.h"
+#include "hamming.h"
+#include "nibble.h"
 
 #include <stdbool.h>
 #include <stdio.h> // Printing
@@ -49,6 +51,22 @@ int main(int argc, char **argv) {
 
     // Initalize
     BitMatrix *G = bm_create_encode();
+    int buffer = 0x00;
+
+    while ((buffer = fgetc(file_in)) != EOF) {
+        uint8_t lower = lower_nibble(buffer);
+        uint8_t encoded_lower = encode(G, lower);
+
+        /* printf("encoded lower %c is %d\n\n", encoded_lower, encoded_lower); */
+        uint8_t upper = upper_nibble((uint8_t) buffer);
+        uint8_t encoded_upper = encode(G, upper);
+        fputc(encoded_upper, file_out);
+        fputc(encoded_lower, file_out);
+        // now inherit file permision
+    }
+
+    /* BitMatrix *Ht = bm_create_decode(); */
+
 
     // while data still in file:
     // Read a byte using fgetc()

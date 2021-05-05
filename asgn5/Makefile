@@ -6,7 +6,7 @@ CFLAGS=-Wall -Wextra -Werror -Wpedantic
 all: encode decode error entropy
 
 encode:
-	$(CC) $(CFLAGS) -o encode encode.c translator.c bv.c bm.c hamming.c
+	$(CC) $(CFLAGS) -o encode encode.c nibble.c translator.c bv.c bm.c hamming.c
 
 decode:
 	$(CC) $(CFLAGS) -o decode decode.c translator.c bv.c bm.c hamming.c

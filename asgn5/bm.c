@@ -58,14 +58,16 @@ BitMatrix *bm_from_data(uint8_t byte, uint32_t length) {
     }
     BitMatrix *m = bm_create(1, length);
     for (uint8_t i = 0; i < length; i++) {
-        bm_set_bit(m, 0, 1 | byte);
+        if (1 & byte) {
+            bm_set_bit(m, 0, i);
+        }
         byte = byte >> 1;
     }
     return m;
 }
 
 uint8_t bm_to_data(BitMatrix *m) {
-    uint32_t byte = 0x1;
+    uint32_t byte = 0x0;
     for (uint8_t i = 0; i < m->cols; i++) {
         byte = byte | (bv_get_bit(m->vector, i) << i);
     }

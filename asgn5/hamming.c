@@ -1,16 +1,14 @@
 #include "hamming.h"
-
+#include "translator.h"
+#include "nibble.h"
 #include "bm.h"
 
+#include <stdio.h>
+
 uint8_t encode(BitMatrix *G, uint8_t msg) {
-
-    return pack_byte(upper, lower);
-    /* BitMatrix *v = bm_from_data(msg, */
-    // NEED TO TEST BM FROM AND TO DATA
-
-
-    return 3;
-    msg = bm_get_bit(G, 0, 0);
+    BitMatrix *V = bm_from_data(msg, 4);
+    BitMatrix *P = bm_multiply(V, G);
+    return bm_to_data(P);
 }
 
 HAM_STATUS decode(BitMatrix *Ht, uint8_t code, uint8_t *msg) {
