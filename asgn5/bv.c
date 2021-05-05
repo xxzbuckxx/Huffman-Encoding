@@ -1,30 +1,30 @@
 #include "bv.h"
+
 #include <inttypes.h>
-#include <stdlib.h> // malloc
 #include <stdio.h>
+#include <stdlib.h> // malloc
 
 typedef struct BitVector {
-   uint32_t length;
-   uint8_t *vector;
+    uint32_t length;
+    uint8_t *vector;
 } BitVector;
 
-
 BitVector *bv_create(uint32_t length) {
-   BitVector *v = (BitVector *) malloc(sizeof(BitVector));
-   if (v) {
-       v->length = length;
-       v->vector = (uint8_t *) calloc(length, sizeof(uint8_t));
-       if (!v->vector) {
-           free(v);
-           v = NULL;
-           return NULL;
-       } else {
-           for (uint32_t i = 0; i < length; i++) {
+    BitVector *v = (BitVector *) malloc(sizeof(BitVector));
+    if (v) {
+        v->length = length;
+        v->vector = (uint8_t *) calloc(length, sizeof(uint8_t));
+        if (!v->vector) {
+            free(v);
+            v = NULL;
+            return NULL;
+        } else {
+            for (uint32_t i = 0; i < length; i++) {
                 v->vector[i] = 0;
-           }
-       }
-   }
-   return v;
+            }
+        }
+    }
+    return v;
 }
 
 void bv_delete(BitVector **v) {

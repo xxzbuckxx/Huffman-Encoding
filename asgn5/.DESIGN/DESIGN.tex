@@ -4,61 +4,113 @@
 \usepackage{varioref} % "on the next page" label decoration
 \usepackage{hyperref} % hyperlinks
 \usepackage{enumitem} % Enumeration
+\usepackage{float} % table placement
 
 \usepackage[lined,dotocloa]{algorithm2e} % Pseudocode
 \labelformat{algocf}{\textit{alg.}\,(#1)}
 
+% Questions
+\newenvironment{QandA}{\begin{enumerate}[label=\bfseries\alph*.]\bfseries}
+{\end{enumerate}}
+\newenvironment{answered}{\par\normalfont}{}
+\usepackage{lipsum}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{%
-\textbf{Assignment 5 \\ 
-Hamming Codes \\
-\large DESIGN DOCUMENT} }
-\author{Zack Traczyk \\ CSE13S - Spring 2021}
-\date{Due: May 9\textsuperscript{th} at 11:59 pm}
+	\textbf{Assignment 5 \\ 
+	Hamming Codes \\
+	\large DESIGN DOCUMENT} }
+	\author{Zack Traczyk \\ CSE13S - Spring 2021}
+	\date{Due: May 9\textsuperscript{th} at 11:59 pm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    \begin{document}
+\begin{document}
 
-    \maketitle
+\maketitle
 
-	\section{Objective}
+\section{Objective}
 
 
-	\section{Given}
+\section{Given}
 
-	\begin{itemize}
-		\item{Header files for stack, path, and graph}
-		\item{Pseudocode for recursive search}
-	\end{itemize}
+\begin{itemize}
+	\item{Header files for stack, path, and graph}
+	\item{Pseudocode for recursive search}
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-	\section{Test Harness}
+\section{Prelab Questions}
 
+\begin{QandA}
 
-	\begin{itemize}
-		\item{h : Command line options }
-		\item{v : Verbose printing; prints all Hamiltonian paths found as well
-			as total number of recursive calls to dfs()}
-		\item{i : infile; the input file contaiing the cities and edges of a graph (default should be stdin)}
-		\item{o : outfile; the output file to print to (default is stdout)}
-	\end{itemize}
+\item Completed Lookup table
 
-	\subsection{Parse}
+	\begin{answered}
 
-	\subsection{Execute}
+		Table \vref{lookup} shows which error vector values are associated with
+		which bits/ error codes.
 
-	\section{Algorithm implementation}
+		\begin{table}[]
+			\centering
+			\begin{tabular}{l|l}
+				\textbf{Value} & \textbf{Bit} \\ \hline
+				0              & 0            \\
+				1              & 4            \\
+				2              & 3            \\
+				3              & HAM\_ERR     \\
+				4              & 2            \\
+				5              & HAM\_ERR     \\
+				6              & HAM\_ERR     \\
+				7              & 5            \\
+				8              & 1            \\
+				9              & HAM\_ERR     \\
+				10             & HAM\_ERR     \\
+				11             & 6            \\
+				12             & HAM\_ERR     \\
+				13             & 7            \\
+				14             & 8            \\
+				15             & HAM\_ERR    
+			\end{tabular}
+			\caption{Lookup Table}\label{lookup}
+		\end{table}
 
-	
+	\end{answered}
 
+	\item Decode the following codes. If it contains an error, show and explain
+		how to correct it.
 
-    \begin{algorithm}
-		increment calls counter\;
-		\If{first call}{
-			add vertex to path according to graph\;
+	\begin{answered}
+		1110 0011 -> $e$ = (1233) = (1011) = 1101 = 11 = Bit 6
+		1101 1000 -> $e$ = (2121) = (0101) = 1010 = 10 = HAM\_ERR
+	\end{answered}
+
+\end{QandA}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Test Harness}
+
+\begin{itemize}
+	\item{h : Command line options }
+	\item{v : Verbose printing; prints all Hamiltonian paths found as well
+		as total number of recursive calls to dfs()}
+	\item{i : infile; the input file containing the cities and edges of a graph (default should be stdin)}
+	\item{o : outfile; the output file to print to (default is stdout)}
+\end{itemize}
+
+\subsection{Parse}
+
+\subsection{Execute}
+
+\section{Algorithm implementation}
+
+\begin{algorithm}
+	increment calls counter\;
+	\If{first call}{
+		add vertex to path according to graph\;
 		}
 		mark vertex as visited in graph\;
 		edge number = adjacent\_edges(graph, vertex to check, array to store in)\;
@@ -67,23 +119,23 @@ Hamming Codes \\
 			\If{path is shortest}{
 				\If{verbose argument set}{
 					print path\;
-				}
-				copy shortest path\;
-			}
-			pop vertex from path\;
-		}{
-			\For{every adjacent vertex}{
-				\If{edge not visited}{
-					push adjacent vertex to path\;
-					\If{if path length is not longer than shortest}{
-						recursive call to DFS\;
 					}
-					pop adjacent vertex from path\;
-				}
-			}
-		}
-		add vertex to path according to graph\;
-        \caption{DFS}\label{execute}
-    \end{algorithm}
+					copy shortest path\;
+					}
+					pop vertex from path\;
+					}{
+						\For{every adjacent vertex}{
+							\If{edge not visited}{
+								push adjacent vertex to path\;
+								\If{if path length is not longer than shortest}{
+									recursive call to DFS\;
+									}
+									pop adjacent vertex from path\;
+									}
+									}
+									}
+									add vertex to path according to graph\;
+									\caption{DFS}\label{execute}
+\end{algorithm}
 
-	\end{document}
+\end{document}

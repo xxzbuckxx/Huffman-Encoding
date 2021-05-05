@@ -1,7 +1,10 @@
+#include "bm.h"
+#include "translator.h"
+
+#include <stdbool.h>
 #include <stdio.h> // Printing
 #include <stdlib.h>
 #include <unistd.h> // For getopt()
-#include <stdbool.h>
 
 #define OPTIONS "hvi:o:"
 
@@ -11,16 +14,15 @@
 
 int main(int argc, char **argv) {
 
-    if (argc < 2) {
-        printf(HELP);
-        return 1; // error
-    }
+    /* if (argc < 2) { */
+    /*     printf(HELP); */
+    /*     return 1; // error */
+    /* } */
 
     FILE *file_in = stdin;
     FILE *file_out = stdout;
 
     bool verbose = false;
-
 
     // Parse
 
@@ -46,8 +48,7 @@ int main(int argc, char **argv) {
     }
 
     // Initalize
-
-    // Graph *G = bm_create();
+    BitMatrix *G = bm_create_encode();
     
     // while data still in file:
     // Read a byte using fgetc()
@@ -58,4 +59,5 @@ int main(int argc, char **argv) {
 
     fclose(file_in);
     fclose(file_out);
+    return 0;
 }

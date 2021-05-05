@@ -6,22 +6,19 @@ CFLAGS=-Wall -Wextra -Werror -Wpedantic
 all: encode decode error entropy
 
 encode:
-	$(CC) $(CFLAGS) -o encode.c bv.c bm.c hamming.c
+	$(CC) $(CFLAGS) -o encode encode.c translator.c bv.c bm.c hamming.c
 
 decode:
-	$(CC) $(CFLAGS) -o decode.c bv.c bm.c hamming.c
+	$(CC) $(CFLAGS) -o decode decode.c translator.c bv.c bm.c hamming.c
 
 error:
-	$(CC) $(CFLAGS) -o error.c bv.c bm.c hamming.c
+	$(CC) $(CFLAGS) -o error error.c bv.c bm.c hamming.c
 
 entropy:
-	$(CC) $(CFLAGS) -o entropy.c bv.c bm.c hamming.c
+	$(CC) $(CFLAGS) -o entropy entropy.c bv.c bm.c hamming.c
 
 clean:
-	rm -f tsp *.o valgrind-out.txt
-
-bm:
-	$(CC) $(CFLAGS) -o bm bm.c bv.c
+	rm -f encode decode error entropy *.o valgrind-out.txt
 
 format:
 	clang-format -i -style=file *.[ch]
