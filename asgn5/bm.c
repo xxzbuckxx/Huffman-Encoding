@@ -27,9 +27,9 @@ BitMatrix *bm_create(uint32_t rows, uint32_t cols) {
 }
 
 void bm_delete(BitMatrix **m) {
+    bv_delete(&((*m)->vector));
     free(*m);
-    /* bv_delete(&((*m)->vector)); */
-    bv_delete(&(*m)->vector);
+    /* bv_delete(&(*m)->vector); */
     *m = NULL;
 }
 

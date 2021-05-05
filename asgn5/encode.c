@@ -1,4 +1,5 @@
 #include "bm.h"
+#include "bv.h"
 #include "hamming.h"
 #include "nibble.h"
 #include "translator.h"
