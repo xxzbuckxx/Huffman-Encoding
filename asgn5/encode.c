@@ -35,6 +35,7 @@ int main(int argc, char **argv) {
         case 'h': printf(HELP); break;
         case 'v': verbose = true; break;
         case 'i':
+            // UNIX PERMISSIONS
             if ((file_in = fopen(optarg, "r")) == NULL) {
                 printf(FILE_NOT_FOUND);
                 return 1; // error
@@ -61,8 +62,8 @@ int main(int argc, char **argv) {
         /* printf("encoded lower %c is %d\n\n", encoded_lower, encoded_lower); */
         uint8_t upper = upper_nibble((uint8_t) buffer);
         uint8_t encoded_upper = encode(G, upper);
-        fputc(encoded_upper, file_out);
         fputc(encoded_lower, file_out);
+        fputc(encoded_upper, file_out);
         // now inherit file permision
     }
 

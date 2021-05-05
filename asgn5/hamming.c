@@ -10,6 +10,7 @@ uint8_t encode(BitMatrix *G, uint8_t msg) {
     BitMatrix *V = bm_from_data(msg, 4);
     BitMatrix *P = bm_multiply(V, G);
     uint8_t res = bm_to_data(P);
+    // add memoization lookup table
     bm_delete(&V);
     bm_delete(&P);
     return res;

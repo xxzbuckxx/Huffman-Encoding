@@ -85,7 +85,7 @@ BitMatrix *bm_multiply(BitMatrix *A, BitMatrix *B) {
         for (uint32_t c = 0; c < length; c++) {
             uint32_t dot_product = 0;
             for (uint32_t i = 0; i < bm_cols(A); i++) {
-                dot_product += bm_get_bit(A, r, i) * bm_get_bit(B, i, c);
+                dot_product += bm_get_bit(A, r, i) * bm_get_bit(B, i, c); // use xor
             }
             if (dot_product % 2) {
                 bm_set_bit(P, r, c);
