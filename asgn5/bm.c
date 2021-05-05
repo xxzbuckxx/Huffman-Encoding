@@ -1,6 +1,8 @@
 #include "bm.h"
+
 #include "bv.h"
 
+#include <assert.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h> // malloc
@@ -71,8 +73,23 @@ uint8_t bm_to_data(BitMatrix *m) {
 }
 
 BitMatrix *bm_multiply(BitMatrix *A, BitMatrix *B) {
-    return A;
-    return B;
+    uint32_t height = bm_rows(A);
+    uint32_t length = bm_cols(B);
+    BitMatrix *P = bm_create(height, length);
+
+    assert(bm_cols(A) == bm_rows(B));
+    for (uint32_t r = 0; r < height; r++) {
+        for (uint32_t c = 0; c < length; c++) {
+            uint32_t dot_product = 0;
+            for (uint32_t i = 0; i < bm_cols(A); i++) {
+                dot_product += bm_get_bit(A, r, i) * bm_get_bit(B, i, c);
+            }
+            if (dot_product % 2) {
+                bm_set_bit(P, r, c);
+            }
+        }
+    }
+    return P;
 }
 
 void bm_print(BitMatrix *m) {

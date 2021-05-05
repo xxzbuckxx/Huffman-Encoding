@@ -1,4 +1,5 @@
 #include "translator.h"
+
 #include "bm.h"
 
 #include <stdint.h>
@@ -24,7 +25,6 @@ BitMatrix *bm_create_encode() {
 
     return G;
 }
-
 
 BitMatrix *bm_create_decode() {
     BitMatrix *Ht = bm_create(8, 4);

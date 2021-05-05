@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
 
     // Initalize
     BitMatrix *G = bm_create_encode();
-    
+
     // while data still in file:
     // Read a byte using fgetc()
     // Generate Hamming(8,4) for both upper and lower nubble using ham_encode()
