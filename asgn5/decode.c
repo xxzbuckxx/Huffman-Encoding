@@ -71,7 +71,6 @@ int main(int argc, char **argv) {
         case HAM_CORRECT: corrected++; break;
         default: break;
         }
-        printf("lower is %d or %c\n", msg_lower, msg_lower);
 
         uint8_t msg_upper = 0;
         HAM_STATUS error_upper = decode(Ht, buffer2, &msg_upper);
@@ -81,24 +80,13 @@ int main(int argc, char **argv) {
         case HAM_CORRECT: corrected++; break;
         default: break;
         }
-        printf("upper is %d or %c\n", msg_upper, msg_upper);
 
         uint8_t decoded = pack_byte(msg_upper, msg_lower);
-        printf("\n\n%d or %c\n", decoded, decoded);
         fputc(decoded, file_out);
         // now inherit file permision
     }
 
     printf("\nProcessed: %lu\nCorrected: %lu\n Error: %lu\n", processed, corrected, error);
-
-    /* BitMatrix *Ht = bm_create_decode(); */
-
-    // while data still in file:
-    // Read a byte using fgetc()
-    // Generate Hamming(8,4) for both upper and lower nubble using ham_encode()
-    //      write to file with fputc()
-    //      Lower first then upper
-    //
 
     bm_delete(&Ht);
     fclose(file_in);

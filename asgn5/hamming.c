@@ -18,21 +18,15 @@ uint8_t encode(BitMatrix *G, uint8_t msg) {
 
 HAM_STATUS decode(BitMatrix *Ht, uint8_t code, uint8_t *msg) {
     BitMatrix *V = bm_from_data(code, 8);
-    printf("original:\n");
-    bm_print(V);
     BitMatrix *E = bm_multiply(V, Ht);
 
     uint8_t error = bm_to_data(E);
-    printf("error:\n");
-    bm_print(E);
 
     uint8_t bit_correct = 0;
-    printf("error msg is %d\n", error);
 
     switch (error) {
     case 0:
-        printf("DECODED: %d or %c", *msg, *msg);
-        *msg = upper_nibble(code);
+        *msg = lower_nibble(code);
         return HAM_OK;
         break;
     case 1: bit_correct = 4; break;
@@ -46,7 +40,6 @@ HAM_STATUS decode(BitMatrix *Ht, uint8_t code, uint8_t *msg) {
     default: return HAM_ERR; break;
     }
 
-    *msg = upper_nibble(code ^ (1 << bit_correct));
-    printf("DECODED: %d or %c", *msg, *msg);
+    *msg = lower_nibble(code ^ (1 << bit_correct));
     return HAM_CORRECT;
 }
