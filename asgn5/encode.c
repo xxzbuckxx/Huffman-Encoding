@@ -58,23 +58,13 @@ int main(int argc, char **argv) {
     while ((buffer = fgetc(file_in)) != EOF) {
         uint8_t lower = lower_nibble(buffer);
         uint8_t encoded_lower = encode(G, lower);
+        fputc(encoded_lower, file_out);
 
-        /* printf("encoded lower %c is %d\n\n", encoded_lower, encoded_lower); */
         uint8_t upper = upper_nibble((uint8_t) buffer);
         uint8_t encoded_upper = encode(G, upper);
-        fputc(encoded_lower, file_out);
         fputc(encoded_upper, file_out);
         // now inherit file permision
     }
-
-    /* BitMatrix *Ht = bm_create_decode(); */
-
-    // while data still in file:
-    // Read a byte using fgetc()
-    // Generate Hamming(8,4) for both upper and lower nubble using ham_encode()
-    //      write to file with fputc()
-    //      Lower first then upper
-    //
 
     bm_delete(&G);
     fclose(file_in);

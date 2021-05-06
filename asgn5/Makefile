@@ -9,7 +9,7 @@ encode:
 	$(CC) $(CFLAGS) -o encode encode.c nibble.c translator.c bv.c bm.c hamming.c
 
 decode:
-	$(CC) $(CFLAGS) -o decode decode.c translator.c bv.c bm.c hamming.c
+	$(CC) $(CFLAGS) -o decode decode.c nibble.c translator.c bv.c bm.c hamming.c
 
 error:
 	$(CC) $(CFLAGS) -o error error.c bv.c bm.c hamming.c
