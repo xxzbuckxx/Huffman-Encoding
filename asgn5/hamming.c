@@ -21,8 +21,11 @@ HAM_STATUS decode(BitMatrix *Ht, uint8_t code, uint8_t *msg) {
     BitMatrix *E = bm_multiply(V, Ht);
 
     uint8_t error = bm_to_data(E);
-
     uint8_t bit_correct = 0;
+
+    bm_delete(&V);
+    bm_delete(&E);
+    // add memoization lookup table
 
     switch (error) {
     case 0:

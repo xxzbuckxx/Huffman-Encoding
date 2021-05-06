@@ -12,10 +12,10 @@ decode:
 	$(CC) $(CFLAGS) -o decode decode.c nibble.c translator.c bv.c bm.c hamming.c
 
 error:
-	$(CC) $(CFLAGS) -o error error.c bv.c bm.c hamming.c
+	$(CC) $(CFLAGS) -o error nibble.c error.c bv.c bm.c hamming.c
 
 entropy:
-	$(CC) $(CFLAGS) -o entropy entropy.c bv.c bm.c hamming.c
+	$(CC) $(CFLAGS) -o entropy nibble.c entropy.c bv.c bm.c hamming.c -lm
 
 clean:
 	rm -f encode decode error entropy *.o valgrind-out.txt

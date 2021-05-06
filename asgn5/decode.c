@@ -5,6 +5,7 @@
 #include "translator.h"
 
 #include <stdbool.h>
+#include <sys/stat.h>
 #include <stdio.h> // Printing
 #include <stdlib.h>
 #include <unistd.h> // For getopt()
@@ -28,6 +29,7 @@ int main(int argc, char **argv) {
     bool verbose = false;
 
     // Parse
+    struct stat statbuf;
 
     int opt = 0;
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
@@ -36,16 +38,19 @@ int main(int argc, char **argv) {
         case 'v': verbose = true; break;
         case 'i':
             // UNIX PERMISSIONS
-            if ((file_in = fopen(optarg, "r")) == NULL) {
+            if ((file_in = fopen(optarg, "rb")) == NULL) {
                 printf(FILE_NOT_FOUND);
                 return 1; // error
             }
+            fstat(fileno(file_in), &statbuf);
             break;
         case 'o':
-            if ((file_out = fopen(optarg, "w")) == NULL) {
+            if ((file_out = fopen(optarg, "wb")) == NULL) {
                 printf(FILE_NOT_FOUND);
                 return 1; // error
             }
+            fchmod(fileno(file_out), statbuf.st_mode);
+
             break;
         default: return 1; // error
         }
@@ -54,39 +59,41 @@ int main(int argc, char **argv) {
     // Initalize
     BitMatrix *Ht = bm_create_decode();
     int buffer1 = 0x00;
-    int buffer2 = 0x00;
 
     uint64_t processed = 0;
     uint64_t corrected = 0;
-    uint64_t error = 0;
+    uint64_t error_bytes = 0;
+    uint8_t last = 0;
 
-    while ((buffer1 = fgetc(file_in)) != EOF && (buffer2 = fgetc(file_in)) != EOF) {
-        processed += 2;
+    while ((buffer1 = fgetc(file_in)) != EOF) {
+        processed++;
 
-        uint8_t msg_lower = 0;
-        HAM_STATUS error_lower = decode(Ht, buffer1, &msg_lower);
-        switch (error_lower) {
+        uint8_t msg = 0;
+        HAM_STATUS error = decode(Ht, buffer1, &msg);
+        switch (error) {
         case HAM_OK: break;
-        case HAM_ERR: error++; break;
+        case HAM_ERR: error_bytes++; break;
         case HAM_CORRECT: corrected++; break;
         default: break;
         }
 
-        uint8_t msg_upper = 0;
-        HAM_STATUS error_upper = decode(Ht, buffer2, &msg_upper);
-        switch (error_upper) {
-        case HAM_OK: break;
-        case HAM_ERR: error++; break;
-        case HAM_CORRECT: corrected++; break;
-        default: break;
-        }
-
-        uint8_t decoded = pack_byte(msg_upper, msg_lower);
-        fputc(decoded, file_out);
         // now inherit file permision
+
+        if (processed % 2) {
+            last = msg;
+        } else {
+            uint8_t decoded = pack_byte(msg, last);
+            fputc(decoded, file_out);
+        }
     }
 
-    printf("\nProcessed: %lu\nCorrected: %lu\n Error: %lu\n", processed, corrected, error);
+    double error_rate = (double) error_bytes / (double) processed;
+
+    if (verbose) {
+        fprintf(stderr,
+            "\nProcessed Bytes: %lu\nUncorrected errors: %lu\nCorrected Errors: %lu\nError: %f\n",
+            processed, error_bytes, corrected, error_rate);
+    }
 
     bm_delete(&Ht);
     fclose(file_in);
