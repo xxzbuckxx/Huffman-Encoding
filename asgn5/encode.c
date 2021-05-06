@@ -1,4 +1,5 @@
 #include "bm.h"
+#include <sys/stat.h>
 #include "bv.h"
 #include "hamming.h"
 #include "nibble.h"
@@ -28,6 +29,7 @@ int main(int argc, char **argv) {
     bool verbose = false;
 
     // Parse
+    struct stat statbuf;
 
     int opt = 0;
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
@@ -40,12 +42,14 @@ int main(int argc, char **argv) {
                 printf(FILE_NOT_FOUND);
                 return 1; // error
             }
+            fstat(fileno(file_in), &statbuf);
             break;
         case 'o':
             if ((file_out = fopen(optarg, "w")) == NULL) {
                 printf(FILE_NOT_FOUND);
                 return 1; // error
             }
+            fchmod(fileno(file_out), statbuf.st_mode);
             break;
         default: return 1; // error
         }
