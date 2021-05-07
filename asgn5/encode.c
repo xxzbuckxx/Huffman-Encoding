@@ -1,5 +1,4 @@
 #include "bm.h"
-#include <sys/stat.h>
 #include "bv.h"
 #include "hamming.h"
 #include "nibble.h"
@@ -8,6 +7,7 @@
 #include <stdbool.h>
 #include <stdio.h> // Printing
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <unistd.h> // For getopt()
 
 #define OPTIONS "hvi:o:"
@@ -42,17 +42,21 @@ int main(int argc, char **argv) {
                 printf(FILE_NOT_FOUND);
                 return 1; // error
             }
-            fstat(fileno(file_in), &statbuf);
             break;
         case 'o':
             if ((file_out = fopen(optarg, "w")) == NULL) {
                 printf(FILE_NOT_FOUND);
                 return 1; // error
             }
-            fchmod(fileno(file_out), statbuf.st_mode);
             break;
         default: return 1; // error
         }
+    }
+
+    // Transfer File permissions
+    if (file_in != stdin && file_out != stdout) {
+        fstat(fileno(file_in), &statbuf);
+        fchmod(fileno(file_out), statbuf.st_mode);
     }
 
     // Initalize
