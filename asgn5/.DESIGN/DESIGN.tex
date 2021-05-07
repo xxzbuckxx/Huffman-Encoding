@@ -18,11 +18,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{%
-	\textbf{Assignment 5 \\ 
-	Hamming Codes \\
-	\large DESIGN DOCUMENT} }
-	\author{Zack Traczyk \\ CSE13S - Spring 2021}
-	\date{Due: May 9\textsuperscript{th} at 11:59 pm}
+    \textbf{Assignment 5 \\ 
+        Hamming Codes \\
+\large DESIGN DOCUMENT} }
+\author{Zack Traczyk \\ CSE13S - Spring 2021}
+\date{Due: May 9\textsuperscript{th} at 11:59 pm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -32,12 +32,17 @@
 
 \section{Objective}
 
+The main programs, encode and decode, encode and decode files using the
+Hamming(8,4) code.
+The provided code for the error program injects noise into an encoded file.
+Entropy calculates the entropy of a file.
+
 
 \section{Given}
 
 \begin{itemize}
-	\item{Header files for stack, path, and graph}
-	\item{Pseudocode for recursive search}
+    \item{Header files for stack, path, and graph}
+    \item{Pseudocode for recursive search}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -48,94 +53,157 @@
 
 \item Completed Lookup table
 
-	\begin{answered}
+    \begin{answered}
 
-		Table \vref{lookup} shows which error vector values are associated with
-		which bits/ error codes.
+        Table \vref{lookup} shows which error vector values are associated with
+        which bits/ error codes.
 
-		\begin{table}[]
-			\centering
-			\begin{tabular}{l|l}
-				\textbf{Value} & \textbf{Bit} \\ \hline
-				0              & 0            \\
-				1              & 4            \\
-				2              & 3            \\
-				3              & HAM\_ERR     \\
-				4              & 2            \\
-				5              & HAM\_ERR     \\
-				6              & HAM\_ERR     \\
-				7              & 5            \\
-				8              & 1            \\
-				9              & HAM\_ERR     \\
-				10             & HAM\_ERR     \\
-				11             & 6            \\
-				12             & HAM\_ERR     \\
-				13             & 7            \\
-				14             & 8            \\
-				15             & HAM\_ERR    
-			\end{tabular}
-			\caption{Lookup Table}\label{lookup}
-		\end{table}
+        \begin{table}[]
+            \centering
+            \begin{tabular}{l|l}
+                \textbf{Value} & \textbf{Bit} \\ \hline
+                0              & 0            \\
+                1              & 4            \\
+                2              & 5            \\
+                3              & HAM\_ERR     \\
+                4              & 6            \\
+                5              & HAM\_ERR     \\
+                6              & HAM\_ERR     \\
+                7              & 3            \\
+                8              & 7            \\
+                9              & HAM\_ERR     \\
+                10             & HAM\_ERR     \\
+                11             & 2            \\
+                12             & HAM\_ERR     \\
+                13             & 1            \\
+                14             & 0            \\
+                15             & HAM\_ERR    
+            \end{tabular}
+            \caption{Lookup Table}\label{lookup}
+        \end{table}
 
-	\end{answered}
+    \end{answered}
 
-	\item Decode the following codes. If it contains an error, show and explain
-		how to correct it.
+\item Decode the following codes. If it contains an error, show and explain
+    how to correct it.
 
-	\begin{answered}
-		1110 0011 -> $e$ = (1233) = (1011) = 1101 = 11 = Bit 6
-		1101 1000 -> $e$ = (2121) = (0101) = 1010 = 10 = HAM\_ERR
-	\end{answered}
+    \begin{answered}
+        1110 0011 $\rightarrow e$ = (1233) = (1011) = b1101 = 13 = 2nd bit
+
+        1101 1000 $\rightarrow e$ = (2121) = (0101) = b1010 = 5 = HAM\_ERR
+    \end{answered}
 
 \end{QandA}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Test Harness}
+\section{Programs}
+
+\subsection{Encode}
+
+This program encodes the Hamming(8,4) code. Bytes can be encoded from stdin or
+a file, and to stdout or a file. The program arguments for encode are as follows:
 
 \begin{itemize}
-	\item{h : Command line options }
-	\item{v : Verbose printing; prints all Hamiltonian paths found as well
-		as total number of recursive calls to dfs()}
-	\item{i : infile; the input file containing the cities and edges of a graph (default should be stdin)}
-	\item{o : outfile; the output file to print to (default is stdout)}
+    \item{-h : Command line options}
+    \item{-i infile : The file containing bytes to be encoded (default is stdin)}
+    \item{-o outfile : The output file to store encoded bytes (default is stdout)}
 \end{itemize}
 
-\subsection{Parse}
+\subsection{Decode}
 
-\subsection{Execute}
+This program decodes the Hamming(8,4) code. As in the encode program, Bytes
+can be decoded from stdin or a file, and to stdout or a file. The program 
+arguments for decode are as follows:
 
-\section{Algorithm implementation}
+\begin{itemize}
+    \item{-h : Command line options }
+    \item{-v : Prints statists of the decoding process to stderr}
+    \item{-i infile : The file containing bytes to be decoded (default is stdin)}
+    \item{-o outfile : The output file to store decoded bytes (default is stdout)}
+\end{itemize}
+
+\subsection{Error}
+
+The source code for this program is provided in the class resources repository.
+Error adds noise to a file and is used to the efficacy of the encoding when decoded.
+
+\begin{itemize}
+    \item{-e : Percent of file to randomly add noise}
+\end{itemize}
+
+\subsection{Entropy}
+
+The source code for this program is provided in the class resources repository.
+Entropy calculates the entropy, or variation of contents, for a file.
+
+\section{Parse}
+
+Program arguments are parsed and stored using flags.
+A set is not used since the order of the inputs is irrelevant and the parsed data
+will ultimately be stored in variables anyway.
+
+After program arguments are parsed the input file is parsed with encode or decode.
+Execution happens with every grab of a byte to the buffer.
+Refer to execute for how the algorithm works.
+
+\section{Execute}
+
+\subsection{Encode}
+
+For encode, the parsed byte is divided into an upper and lower nibble. 
+Then, the lower nibble is encoded and the byte is written to file out.
+The same is done for the upper byte.
+This process is repeated until the entire file is parsed. The pseudocode
+is shown in \vref{encode}.
 
 \begin{algorithm}
-	increment calls counter\;
-	\If{first call}{
-		add vertex to path according to graph\;
-		}
-		mark vertex as visited in graph\;
-		edge number = adjacent\_edges(graph, vertex to check, array to store in)\;
-		\eIf{path has hit every node}{
-			push vertex to path\;
-			\If{path is shortest}{
-				\If{verbose argument set}{
-					print path\;
-					}
-					copy shortest path\;
-					}
-					pop vertex from path\;
-					}{
-						\For{every adjacent vertex}{
-							\If{edge not visited}{
-								push adjacent vertex to path\;
-								\If{if path length is not longer than shortest}{
-									recursive call to DFS\;
-									}
-									pop adjacent vertex from path\;
-									}
-									}
-									}
-									add vertex to path according to graph\;
-									\caption{DFS}\label{execute}
+    initialize encode matrix G\;
+    \While{buffer grabs byte from file\_in if not end of file} {
+        lower = lower\_nibble(buffer)\;
+        encoded lower = encode(encode matrix G, lower)\;
+        write encoded lower to out file\;
+        \vspace{0.4em}
+        upper = upper\_nibble(buffer)\;
+        encoded upper = encode(encode matrix, upper)\;
+        write encoded upper to out file\;
+    }
+
+    delete encode matrix\;
+    close files\;
+    \caption{Encode}\label{encode}
+\end{algorithm}
+
+\subsection{Decode}
+
+Decode is (unsurprisingly) the opposite of encode. After one byte is
+parsed, it is decoded and stored in a variable last.
+Every even odd iteration, a byte is parsed and decoded like before,
+but instead of storing in last, the function pack\_byte is called
+and puts the last nibble and current nibble together and writes to
+stdout.
+The pseduocode is shown in \vref{decode}.
+
+\begin{algorithm}
+    initialize decode matrix Ht\;
+    initialize analytic variables\;
+    \While{buffer grabs byte from file\_in if not end of file} {
+        increment processed bytes\;
+        initialize message pointer\;
+        error = decode(decode matrix Ht, buffer, pointer to decoded message)\;
+		error handling\;
+        \vspace{0.4em}
+        \eIf{processed bytes is even}{
+            last = msg\;
+            }{
+            decoded = pack\_byte(msg, last)\;
+            write decoded to out file\;
+        }
+    }
+
+    delete encode matrix\;
+    close files\;
+    \caption{Decode}\label{decode}
 \end{algorithm}
 
 \end{document}
