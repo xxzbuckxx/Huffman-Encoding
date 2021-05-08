@@ -40,7 +40,7 @@ HAM_STATUS decode(BitMatrix *Ht, uint8_t code, uint8_t *msg) {
     case 11: bit_correct = 2; break;
     case 13: bit_correct = 1; break;
     case 14: bit_correct = 0; break;
-    default: return HAM_ERR; break;
+    default: return HAM_ERR; break; // if HAM_ERR doesn't update msg
     }
 
     *msg = lower_nibble(code ^ (1 << bit_correct));

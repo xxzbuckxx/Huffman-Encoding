@@ -23,15 +23,6 @@ clean:
 format:
 	clang-format -i -style=file *.[ch]
 
-leak-check: clean all
-	valgrind --leak-check=full\
-         --show-leak-kinds=all\
-         --track-origins=yes\
-         --verbose\
-         --log-file=valgrind-out.txt\
-         ./tsp
-	vim valgrind-out.txt
-
 scan-build: clean
 	scan-build make
 
