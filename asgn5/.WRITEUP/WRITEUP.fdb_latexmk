@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1620372149 "WRITEUP.tex" "WRITEUP.pdf" "WRITEUP" 1620372149
+["pdflatex"] 1620514245 "WRITEUP.tex" "WRITEUP.pdf" "WRITEUP" 1620514246
   "/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/tfm/bitstrea/charter/bchb7t.tfm" 1136768653 2732 006d846b4d54f9b40899c7c3eecd771a ""
@@ -65,11 +65,11 @@
   "/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1616695603 5169178 a2ce6e2d73f603b690db6777d06dbccb ""
   "/usr/local/texlive/2021/texmf-var/web2c/pdftex/pdflatex.fmt" 1618538705 2724736 b84aaa76a24deeb41e2df52d4d4117da ""
   "/usr/local/texlive/2021/texmf.cnf" 1616695596 577 4c1911a7228e554c6032256d3cf5567d ""
-  "WRITEUP.aux" 1620372149 686 e6bf9f11827e1eae1d85e75b99e0a183 "pdflatex"
-  "WRITEUP.out" 1620372149 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "WRITEUP.tex" 1620372148 649 6427f5161a65af1876550b7f8ec7bf41 ""
+  "WRITEUP.aux" 1620514246 686 e6bf9f11827e1eae1d85e75b99e0a183 "pdflatex"
+  "WRITEUP.out" 1620514245 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "WRITEUP.tex" 1620514243 821 274a4a2a4896b8b8d4654b8f77a9b495 ""
   (generated)
-  "WRITEUP.aux"
+  "WRITEUP.out"
   "WRITEUP.log"
   "WRITEUP.pdf"
-  "WRITEUP.out"
+  "WRITEUP.aux"
