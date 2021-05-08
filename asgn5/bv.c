@@ -1,24 +1,32 @@
 #include "bv.h"
 
-#include <inttypes.h>
-#include <stdio.h>
+#include <inttypes.h> // int types
+#include <stdio.h> // print debug
 #include <stdlib.h> // malloc
 
+// 
+// A structure for defining a BitVector
+//
 typedef struct BitVector {
-    uint32_t length;
-    uint8_t *vector;
+    uint32_t length; // number of elements
+    uint8_t *vector; // array of elements
 } BitVector;
 
+// 
+// Creates a BitVector
+//
+// length: length of BitVector
+//
 BitVector *bv_create(uint32_t length) {
     BitVector *v = (BitVector *) malloc(sizeof(BitVector));
-    if (v) {
+    if (v) { // if memory allocated successfully
         v->length = length;
         v->vector = (uint8_t *) malloc(length);
-        if (!v->vector) {
+        if (!v->vector) { // if memory not allocated successfully for array
             free(v);
             v = NULL;
             return NULL;
-        } else {
+        } else { // initialize with 0s
             for (uint32_t i = 0; i < length; i++) {
                 v->vector[i] = 0;
             }
