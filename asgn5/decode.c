@@ -55,19 +55,19 @@ int main(int argc, char **argv) {
         fchmod(fileno(file_out), statbuf.st_mode);
     }
 
-    // Initalize
+    // Initialize
     BitMatrix *Ht = bm_create_decode();
     int buffer = 0x00;
 
     uint64_t processed = 0;
     uint64_t corrected = 0;
     uint64_t error_bytes = 0;
-    uint8_t last = 0;
-
+    uint8_t lower = 0;
+    uint8_t msg = 0;
+        
     while ((buffer = fgetc(file_in)) != EOF) {
         processed++;
 
-        uint8_t msg = 0;
         HAM_STATUS error = decode(Ht, buffer, &msg);
         switch (error) {
         case HAM_ERR: error_bytes++; break;
@@ -75,10 +75,13 @@ int main(int argc, char **argv) {
         default: break;
         }
 
+        // Deal with setting nibbles
         if (processed % 2) {
-            last = msg;
+            if (error != HAM_ERR) {
+                lower = msg;
+            }
         } else {
-            uint8_t decoded = pack_byte(msg, last);
+            uint8_t decoded = pack_byte(msg, lower);
             fputc(decoded, file_out);
         }
     }

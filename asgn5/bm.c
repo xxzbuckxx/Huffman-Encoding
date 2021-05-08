@@ -7,12 +7,21 @@
 #include <stdio.h>
 #include <stdlib.h> // malloc
 
+//
+// Structre for defining a BitMatrix
+//
 typedef struct BitMatrix {
-    uint32_t rows;
-    uint32_t cols;
-    BitVector *vector;
+    uint32_t rows; // number of rows
+    uint32_t cols; // number of columns
+    BitVector *vector; // 2d matrix stored as BitVector
 } BitMatrix;
 
+//
+// Creates a BitMatrix
+//
+// rows: number of rows
+// cols: number of columns
+//
 BitMatrix *bm_create(uint32_t rows, uint32_t cols) {
     BitMatrix *m = (BitMatrix *) malloc(sizeof(BitMatrix));
     if (m) {
@@ -26,13 +35,22 @@ BitMatrix *bm_create(uint32_t rows, uint32_t cols) {
     return m;
 }
 
+// 
+// Deletes a BitMatrix
+//
+// m: address to an address of a BitMatrix
+//
 void bm_delete(BitMatrix **m) {
     bv_delete(&((*m)->vector));
     free(*m);
-    /* bv_delete(&(*m)->vector); */
     *m = NULL;
 }
 
+//
+// Gives the number of rows in a BitMatrix
+//
+// m: an address of a BitMatrix
+//
 uint32_t bm_rows(BitMatrix *m) {
     return m ? m->rows : 0;
 }
