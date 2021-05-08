@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
     uint64_t error_bytes = 0;
     uint8_t lower = 0;
     uint8_t msg = 0;
-        
+
     while ((buffer = fgetc(file_in)) != EOF) {
         processed++;
 

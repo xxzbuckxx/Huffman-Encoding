@@ -10,7 +10,7 @@
 #include <sys/stat.h>
 #include <unistd.h> // For getopt()
 
-#define OPTIONS "hvi:o:"
+#define OPTIONS "hi:o:"
 
 #define FILE_NOT_FOUND "File not found ;(\n"
 
@@ -18,33 +18,25 @@
 
 int main(int argc, char **argv) {
 
-    /* if (argc < 2) { */
-    /*     printf(HELP); */
-    /*     return 1; // error */
-    /* } */
-
+    // File descriptors
     FILE *file_in = stdin;
     FILE *file_out = stdout;
-
-    bool verbose = false;
+    struct stat statbuf; // file permissions
 
     // Parse
-    struct stat statbuf;
 
     int opt = 0;
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
         switch (opt) {
         case 'h': printf(HELP); break;
-        case 'v': verbose = true; break;
         case 'i':
-            // UNIX PERMISSIONS
-            if ((file_in = fopen(optarg, "r")) == NULL) {
+            if ((file_in = fopen(optarg, "rb")) == NULL) {
                 printf(FILE_NOT_FOUND);
                 return 1; // error
             }
             break;
         case 'o':
-            if ((file_out = fopen(optarg, "w")) == NULL) {
+            if ((file_out = fopen(optarg, "wb")) == NULL) {
                 printf(FILE_NOT_FOUND);
                 return 1; // error
             }
@@ -59,7 +51,7 @@ int main(int argc, char **argv) {
         fchmod(fileno(file_out), statbuf.st_mode);
     }
 
-    // Initalize
+    // Initialize
     BitMatrix *G = bm_create_encode();
     int buffer = 0x00;
 
@@ -71,7 +63,7 @@ int main(int argc, char **argv) {
         uint8_t upper = upper_nibble((uint8_t) buffer);
         uint8_t encoded_upper = encode(G, upper);
         fputc(encoded_upper, file_out);
-        // now inherit file permision
+        // now inherit file permission
     }
 
     bm_delete(&G);
