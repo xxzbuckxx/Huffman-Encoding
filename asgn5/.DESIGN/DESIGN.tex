@@ -53,12 +53,12 @@ Entropy calculates the entropy of a file.
 
 \item Completed Lookup table
 
-    \begin{answered}
+	\begin{answered}
 
         Table \vref{lookup} shows which error vector values are associated with
         which bits/ error codes.
 
-        \begin{table}[]
+        \begin{table}[ht]
             \centering
             \begin{tabular}{l|l}
                 \textbf{Value} & \textbf{Bit} \\ \hline
@@ -174,6 +174,10 @@ is shown in \vref{encode}.
     \caption{Encode}\label{encode}
 \end{algorithm}
 
+Encoding a nibble requires 3 main steps: converting a nibble to a bit
+vector, multiplying by the encoding matrix, then converting the resulting
+matrix back into a byte.
+
 \subsection{Decode}
 
 Decode is (unsurprisingly) the opposite of encode. After one byte is
@@ -205,5 +209,9 @@ The pseduocode is shown in \vref{decode}.
     close files\;
     \caption{Decode}\label{decode}
 \end{algorithm}
+
+Decoding a byte is not a simple as encoding since the result of the decode
+dot product is an error vector instead of the decoded bit. To decode, a simalr
+method to 
 
 \end{document}
