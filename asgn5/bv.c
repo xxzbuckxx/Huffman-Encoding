@@ -93,7 +93,7 @@ uint8_t bv_get_bit(BitVector *v, uint32_t i) {
 // Xor a bit in a BitVector
 //
 // v: an address of a BitVector
-// i: the element to in the BitVector to xor
+// i: the element in the BitVector to xor
 // bit: the bit to xor with
 //
 void bv_xor_bit(BitVector *v, uint32_t i, uint8_t bit) {
