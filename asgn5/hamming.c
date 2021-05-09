@@ -4,31 +4,43 @@
 #include "nibble.h"
 #include "translator.h"
 
-#include <stdio.h>
-
+// 
+// Encodes a nibble with a hamming(8,4) code
+//
+// G: Encode BitMatrix
+// msg: input nibble to encode
+//
 uint8_t encode(BitMatrix *G, uint8_t msg) {
-    BitMatrix *V = bm_from_data(msg, 4);
-    BitMatrix *P = bm_multiply(V, G);
-    uint8_t res = bm_to_data(P);
-    // add memoization lookup table
-    bm_delete(&V);
-    bm_delete(&P);
+    BitMatrix *V = bm_from_data(msg, 4); // create input vector from nibble (1d BitMatrix)
+    BitMatrix *P = bm_multiply(V, G); // create encoded (output) vector (1d BitMatrix)
+    uint8_t res = bm_to_data(P); // convert output to byte
+    // add memorization lookup table ///
+    bm_delete(&V); // free input vector BitMatrix 
+    bm_delete(&P); // free encoded (output) vector
     return res;
 }
 
+// 
+// Decodes am encoded hamming(8,4) code into a nibble and returns status of decoding
+//
+// Ht: Decode BitMatrix
+// code: encoded byte to decode
+// msg: address to store decoded message
+//
 HAM_STATUS decode(BitMatrix *Ht, uint8_t code, uint8_t *msg) {
-    BitMatrix *V = bm_from_data(code, 8);
-    BitMatrix *E = bm_multiply(V, Ht);
+    BitMatrix *V = bm_from_data(code, 8); // create input vector from encoded byte (1d BitMatrix)
+    BitMatrix *E = bm_multiply(V, Ht); // create error vector (1d BitMatrix)
 
-    uint8_t error = bm_to_data(E);
-    uint8_t bit_correct = 0;
+    uint8_t error = bm_to_data(E); // convert error output to byte
+    uint8_t bit_correct = 0; // bit to correct
 
     bm_delete(&V);
     bm_delete(&E);
-    // add memoization lookup table
+
+    // add memoization lookup table ///
 
     switch (error) {
-    case 0:
+    case 0: // decoded without error
         *msg = lower_nibble(code);
         return HAM_OK;
         break;
@@ -40,9 +52,9 @@ HAM_STATUS decode(BitMatrix *Ht, uint8_t code, uint8_t *msg) {
     case 11: bit_correct = 2; break;
     case 13: bit_correct = 1; break;
     case 14: bit_correct = 0; break;
-    default: return HAM_ERR; break; // if HAM_ERR doesn't update msg
+    default: return HAM_ERR; break; // 2 or more errors (cannot be fixed)
     }
 
-    *msg = lower_nibble(code ^ (1 << bit_correct));
+    *msg = lower_nibble(code ^ (1 << bit_correct)); // correct bit
     return HAM_CORRECT;
 }

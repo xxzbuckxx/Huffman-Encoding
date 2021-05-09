@@ -2,8 +2,9 @@
 
 #include "bm.h"
 
-#include <stdint.h>
-
+// 
+// Returns the encode BitMatrix (G)
+//
 BitMatrix *bm_create_encode() {
     BitMatrix *G = bm_create(4, 8);
     bm_set_bit(G, 0, 0);
@@ -26,6 +27,9 @@ BitMatrix *bm_create_encode() {
     return G;
 }
 
+//
+// Returns the decode BitMatrix (Ht)
+//
 BitMatrix *bm_create_decode() {
     BitMatrix *Ht = bm_create(8, 4);
     bm_set_bit(Ht, 0, 1);
