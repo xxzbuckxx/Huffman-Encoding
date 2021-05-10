@@ -26,4 +26,4 @@ set key top right
 set output "${2}.entropy.jpg"
 plot "/tmp/entropy.dat" with points lc rgbcolor "#46237A" title "original entropy", \
 	 "/tmp/entropy_encoded.dat" with points lc rgbcolor "#1ed448" title "encoded entropy"
-	
+XX

@@ -176,7 +176,10 @@ is shown in \vref{encode}.
 
 Encoding a nibble requires 3 main steps: converting a nibble to a bit
 vector, multiplying by the encoding matrix, then converting the resulting
-matrix back into a byte.
+matrix back into a byte. This process requires a BitMatrix implementation which then 
+requires a BitVector implementation to function.
+Both the Bitvector and BitMatrix functions are explained in detail in the lab document
+so they will not be discussed here.
 
 \subsection{Decode}
 
@@ -211,7 +214,19 @@ The pseduocode is shown in \vref{decode}.
 \end{algorithm}
 
 Decoding a byte is not a simple as encoding since the result of the decode
-dot product is an error vector instead of the decoded bit. To decode, a simalr
-method to 
+dot product is an error vector instead of the decoded bit. To decode, a similar
+method is used to begin: an encoded byte is multiplied by a decoding matrix
+resulting in an error nibble.
+This is where the lookup table is needed.
+the value given by the error nibble corresponds to a bit to fix, or reveals that
+the message is correct or unfixable (containing two or more errors).
+When the bit that needs to be corrected is discovered, the bit is fixed, the nibble is stored,  and the function
+returns that the decoding was fixed.
+When a messsage is correct, the function returns that everything is okay and stores the decoded nibble.
+If an uncorrectable error occurs the decode function returns error and the last successfully
+encoded nibble for that section of the byte (lower or upper) is outputed.
+
+Depending on the various function outputs, the corresponding analytical variable (correct, corrected,
+uncorrectable) is incremented for the verbose printing statistics.
 
 \end{document}
