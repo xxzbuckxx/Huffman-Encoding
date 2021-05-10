@@ -1,19 +1,22 @@
 # Assignment 5 - Hamming Codes
 
-
+Create hamming(8,4) encoding and decoding programs.
 
 # How to Build
 
 Execute the command `make` and it should compile using the provided makefile.
 
-Run the compiled binary with `./tsp`
+Run the compiled binary with `./encode` or `./decode`
 
 #### Options
 
 * -i `input file` : file that contains a graph to search
 * -o `output file`: file that is printed to
-* -v : print verbose output (all found paths)
 * -h help : how to use function
+
+(just for decode)
+
+* -v : print verbose output (all found paths)
 
 # File Explanation
 
@@ -73,7 +76,12 @@ This document details how the program was designed. This includes:
 * What was given in the lab doc
 * General explanation for code implementation
 
+#### WRITEUP.pdf
+
+This document contains an analysis of entropy and how it relates to file contents and injected noise.
+
 #### HIDDEN FOLDERS
 
 .DESIGN contains the LaTeX document for the design document
+.WRITEUP conatins the LaTeX document for the writeup as well as the graphs and bash script to produce them
 

@@ -13,7 +13,7 @@ uint8_t lower_nibble(uint8_t val) {
     return val & 0xF;
 }
 
-// 
+//
 // Returns higher nibble of a byte (returned nibble placed in lower nibble position)
 //
 // val: byte to take higher nibble from
