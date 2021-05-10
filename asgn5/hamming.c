@@ -4,7 +4,7 @@
 #include "nibble.h"
 #include "translator.h"
 
-// 
+//
 // Encodes a nibble with a hamming(8,4) code
 //
 // G: Encode BitMatrix
@@ -15,12 +15,12 @@ uint8_t encode(BitMatrix *G, uint8_t msg) {
     BitMatrix *P = bm_multiply(V, G); // create encoded (output) vector (1d BitMatrix)
     uint8_t res = bm_to_data(P); // convert output to byte
     // add memorization lookup table ///
-    bm_delete(&V); // free input vector BitMatrix 
+    bm_delete(&V); // free input vector BitMatrix
     bm_delete(&P); // free encoded (output) vector
     return res;
 }
 
-// 
+//
 // Decodes am encoded hamming(8,4) code into a nibble and returns status of decoding
 //
 // Ht: Decode BitMatrix

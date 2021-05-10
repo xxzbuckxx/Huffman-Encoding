@@ -2,7 +2,7 @@
 
 #include "bm.h"
 
-// 
+//
 // Returns the encode BitMatrix (G)
 //
 BitMatrix *bm_create_encode() {

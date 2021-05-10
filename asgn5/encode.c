@@ -14,8 +14,11 @@
 
 #define FILE_NOT_FOUND "File not found ;(\n"
 
-#define HELP "how to use here"
-
+#define HELP                                                                                       \
+    "SYNOPSIS\n  A hamming(8,4) code encoder.\n\nUSAGE\n  pipe or specify a file to "              \
+    "encode.\n\nOPTIONS\n  -h               Program usage and help.\n  -i               Input "    \
+    "file: file that to be encoded.\n  -o               Output file: file that stores the "        \
+    "encoding.\n"
 int main(int argc, char **argv) {
 
     // File descriptors
@@ -28,7 +31,10 @@ int main(int argc, char **argv) {
     int opt = 0;
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
         switch (opt) {
-        case 'h': printf(HELP); break;
+        case 'h':
+            printf(HELP);
+            return 0;
+            break;
         case 'i':
             if ((file_in = fopen(optarg, "rb")) == NULL) {
                 printf(FILE_NOT_FOUND);
