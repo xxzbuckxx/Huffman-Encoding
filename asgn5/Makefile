@@ -1,21 +1,31 @@
 # Makefile compiling (lines 2-16) adapted from Proffessor Long https://piazza.com/class/kmfs2bmdr9syz?cid=63
+ENCODE = encode.c 
+DECODE = decode.c
+ERROR = error.c
+ENTROPY = entropy.c
+
+SOURCES = hamming.c bv.c bm.c translator.c nibble.c encode.c decode.c error.c entropy.c
+OBJECTS = $(SOURCES:%.c=%.o)
 
 CC=clang
 CFLAGS=-Wall -Wextra -Werror -Wpedantic
 
-all: encode decode error entropy
+all: $(ENCODE) $(DECODE) $(ERROR) $(ENTROPY)
 
-encode:
-	$(CC) $(CFLAGS) -o encode encode.c nibble.c translator.c bv.c bm.c hamming.c
+$(ENCODE): $(ENCODE)
+	$(CC) -o $@ $^ $(LFLAGS)
 
-decode:
-	$(CC) $(CFLAGS) -o decode decode.c nibble.c translator.c bv.c bm.c hamming.c
+$(ENCODE): $(DECODE)
+	$(CC) -o $@ $^ $(LFLAGS)
 
-error:
-	$(CC) $(CFLAGS) -o error nibble.c error.c bv.c bm.c hamming.c
+$(ENCODE): $(ERROR)
+	$(CC) -o $@ $^ $(LFLAGS)
 
-entropy:
-	$(CC) $(CFLAGS) -o entropy nibble.c entropy.c bv.c bm.c hamming.c -lm
+$(ENCODE): $(ENTROPY)
+	$(CC) -o $@ $^ $(LFLAGS)
+
+%.o: %.clean
+	$(CC) $(CFLAGS) -c $<
 
 clean:
 	rm -f encode decode error entropy *.o valgrind-out.txt
