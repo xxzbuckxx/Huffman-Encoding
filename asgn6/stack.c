@@ -37,4 +37,3 @@ bool stack_push(Stack *s, Node *n);
 bool stack_pop(Stack *s, Node **n);
 
 void stack_print(Stack *s);
-

@@ -1,7 +1,9 @@
+#include "io.h"
+
+#include <fcntl.h>
 #include <stdbool.h>
 #include <stdio.h> // Printing
-#include <fcntl.h>
-#include <sys/stat.h>
+/* #include <sys/stat.h> */
 #include <unistd.h> // For getopt()
 
 #define OPTIONS "hi:o:v:"
@@ -15,10 +17,14 @@
     "encoding.\n"
 int main(int argc, char **argv) {
 
+    /* if (argc < 2) { */
+    /*     printf(HELP); */
+    /*     return 0; */
+    /* } */
+
     // File descriptors
     int file_in = 0;
     int file_out = 0;
-    struct stat statbuf; // file permissions
 
     bool verbose = false;
 
@@ -26,34 +32,45 @@ int main(int argc, char **argv) {
     int opt = 0;
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
         switch (opt) {
-        case 'h':
-            printf(HELP);
-            return 0;
-            break;
-        case 'v': verbose = true; break;
-        case 'i':
-            open(optarg, 
-            if () {
-                printf(FILE_NOT_FOUND);
-                return 1; // error
-            }
-            break;
-        case 'o':
-            if ((file_out = fopen(optarg, "wb")) == NULL) {
-                printf(FILE_NOT_FOUND);
-                return 1; // error
-            }
-            break;
-        default: return 1; // error
+            case 'h':
+                printf(HELP);
+                return 0;
+                break;
+            case 'v': verbose = true; break;
+            case 'i':
+                      if ((file_in = open(optarg, O_RDONLY)) == -1) {
+                          printf(FILE_NOT_FOUND);
+                          return 1; // error
+                      }
+                      break;
+            case 'o':
+                      if ((file_out = open(optarg, O_WRONLY | O_CREAT | O_TRUNC)) == -1) {
+                          printf(FILE_NOT_FOUND);
+                          return 1; // error
+                      }
+                      break;
+            default: return 1; // error
         }
     }
 
-    // Transfer File permissions
-    if (file_in != stdin && file_out != stdout) {
-        fstat(fileno(file_in), &statbuf);
-        fchmod(fileno(file_out), statbuf.st_mode);
+    char buffer[8];
+    uint8_t *buf = (uint8_t *) buffer;
+    uint8_t read = 0;
+    while ((read = read_bytes(file_in, buf, sizeof(buffer))) != 0) {
+        write_bytes(file_out, buf, read);
     }
 
+
+    // Transfer File permissions
+    /* if (file_in != stdin && file_out != stdout) { */
+    /*     fstat(fileno(file_in), &statbuf); */
+    /*     fchmod(fileno(file_out), statbuf.st_mode); */
+    /* } */
+
     // Execute
+
+    close(file_in);
+    close(file_out);
+
     return 0;
 }

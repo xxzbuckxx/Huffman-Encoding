@@ -1,9 +1,9 @@
 #include "node.h"
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-// 
+//
 // Creates a Node
 //
 // symbol: symbol of node
@@ -20,7 +20,7 @@ Node *node_create(uint8_t symbol, uint64_t frequency) {
     return n;
 }
 
-// 
+//
 // Delete a Node
 //
 // n: an adress to an address of a Node
@@ -30,7 +30,7 @@ void node_delete(Node **n) {
     *n = NULL;
 }
 
-// 
+//
 // Join two nodes together
 //
 // left: an address of a Node to be stored to the left
@@ -43,7 +43,7 @@ Node *node_join(Node *left, Node *right) {
     return n;
 }
 
-// 
+//
 // Prints a node for debugging
 //
 // n: an address of a node to be stored
@@ -51,7 +51,8 @@ Node *node_join(Node *left, Node *right) {
 void node_print(Node *n) {
     printf("   %c:%ld\n", n->symbol, n->frequency);
     if (n->left != NULL && n->right != NULL) {
-        printf("   /  \\\n%c:%ld   %c:%ld\n", n->left->symbol, n->left->frequency, n->right->symbol, n->right->frequency);
+        printf("   /  \\\n%c:%ld   %c:%ld\n", n->left->symbol, n->left->frequency, n->right->symbol,
+            n->right->frequency);
     }
 
     return;
