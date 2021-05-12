@@ -1,4 +1,7 @@
 #include "io.h"
+#include "node.h"
+#include "stack.h"
+#include "code.h"
 
 #include <fcntl.h>
 #include <stdbool.h>
@@ -44,7 +47,7 @@ int main(int argc, char **argv) {
                       }
                       break;
             case 'o':
-                      if ((file_out = open(optarg, O_WRONLY | O_CREAT | O_TRUNC)) == -1) {
+                      if ((file_out = open(optarg, O_WRONLY | O_TRUNC)) == -1) {
                           printf(FILE_NOT_FOUND);
                           return 1; // error
                       }
@@ -53,14 +56,6 @@ int main(int argc, char **argv) {
         }
     }
 
-    char buffer[8];
-    uint8_t *buf = (uint8_t *) buffer;
-    uint8_t read = 0;
-    while ((read = read_bytes(file_in, buf, sizeof(buffer))) != 0) {
-        write_bytes(file_out, buf, read);
-    }
-
-
     // Transfer File permissions
     /* if (file_in != stdin && file_out != stdout) { */
     /*     fstat(fileno(file_in), &statbuf); */
@@ -68,7 +63,6 @@ int main(int argc, char **argv) {
     /* } */
 
     // Execute
-
     close(file_in);
     close(file_out);
 

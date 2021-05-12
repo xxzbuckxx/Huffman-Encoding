@@ -15,8 +15,7 @@ Node *node_create(uint8_t symbol, uint64_t frequency) {
         n->symbol = symbol;
         n->frequency = frequency;
     }
-    n->left = NULL;
-    n->right = NULL;
+    n->left = n->right = NULL;
     return n;
 }
 
@@ -54,6 +53,5 @@ void node_print(Node *n) {
         printf("   /  \\\n%c:%ld   %c:%ld\n", n->left->symbol, n->left->frequency, n->right->symbol,
             n->right->frequency);
     }
-
     return;
 }
