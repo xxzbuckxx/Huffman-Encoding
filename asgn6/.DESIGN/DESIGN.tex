@@ -9,6 +9,8 @@
 \usepackage[lined,dotocloa]{algorithm2e} % Pseudocode
 \labelformat{algocf}{\textit{alg.}\,(#1)}
 
+\def\code#1{\texttt{#1}} % code monospace formatting
+
 % Questions
 \newenvironment{QandA}{\begin{enumerate}[label=\bfseries\alph*.]\bfseries}
 {\end{enumerate}}
@@ -32,38 +34,77 @@
 
 \section{Objective}
 
+Implement static lossless file compression using Huffman encoding.
 
 \section{Given}
 
 \begin{itemize}
-    \item{Header files for stack}
-    \item{Pseudocode for recursive search}
+    \item{Header files for definitions, header, node, priority queue, code, io, stack, Huffman}
+	\item{C file for entropy}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\section{Data Structures}
+
+This assignment required a couple implementing three different datatypes to work:
+nodes, a stack, and a priority queue. The implementation for these abstract
+datatypes will be described in detail below.
+
+\subsection{Nodes}
+
+Nodes are implemented in \code{node.c} and follow the assignment document specifications.
+As given in the document, a node is a structure that holds pointers to its left and 
+right child, an 8-bit unsigned integer for its symbol, and a 64-bit unsigned integer 
+for its frequency. Nodes are used to construct a Huffman tree which is required for
+encoding.
+
+\subsection{Stack}
+
+Stacks are implemented in \code{stack.c}. A stack is a structure that contains an
+array of pointers to Nodes (the elements the stack holds), an unsigned 32-bit integer
+to the next empty value in the stack, and an unsigned 32-bit integer that stores the
+total capacity of the queue.
+
+\subsection{Priority Queue}
+
+Priority queues are implemented in \code{pq.c} using a min heap. A priority queue
+is a structure that contains an array of pointers to Nodes (this is where elements
+that are enqueued and dequeued are stored), an unsigned 32-bit integer to the next
+empty value in the stack, and an unsigned 32-bit integer that stores the total
+capacity of the queue.
+
 \section{Programs}
+
+Before creating the two required programs, encode and decode, some more helpful
+functions needed to be implemented to help with io functionality and to assist
+with the encoding and decoding.
+
+\subsection{IO}
+
+There were four functions that were implemented in this file (io.c)
 
 \subsection{Encode}
 
 \begin{itemize}
     \item{-h : Command line options}
-    \item{-i infile : The file containing bytes to be encoded (default is stdin)}
-    \item{-o outfile : The output file to store encoded bytes (default is stdout)}
+	\item{-i \code{infile} : The file containing bytes to be encoded (default is \code{stdin})}
+	\item{-o \code{outfile} : The output file to store encoded bytes (default is \code{stdout})}
+	\item{-v : Prints compression statists of the encoding process to \code{stderr}}
 \end{itemize}
 
 \subsection{Decode}
 
 \begin{itemize}
     \item{-h : Command line options }
-    \item{-v : Prints statists of the decoding process to stderr}
-    \item{-i infile : The file containing bytes to be decoded (default is stdin)}
-    \item{-o outfile : The output file to store decoded bytes (default is stdout)}
+	\item{-i \code{infile} : The file containing bytes to be decoded (default is \code{stdin})}
+		\item{-o \code{outfile} : The output file to store decoded bytes (default is \code{stdout})}
+	\item{-v : Prints statists of the decoding process to \code{stderr}}
 \end{itemize}
 
 \subsection{Entropy}
 
-The source code for this program is provided in the class resources repository.
+The source code for this program (\code{entropy.c}) is provided in the class resources repository.
 Entropy calculates the entropy, or variation of contents, for a file.
 
 \section{Parse}
@@ -80,11 +121,8 @@ Refer to execute for how the algorithm works.
 
 \subsection{Encode}
 
-For encode, the parsed byte is divided into an upper and lower nibble. 
-Then, the lower nibble is encoded and the byte is written to file out.
-The same is done for the upper byte.
-This process is repeated until the entire file is parsed. The pseudocode
-is shown in \vref{encode}.
+Compressing a file requires a few steps. First, a histogram is constructed of the
+most used files. \vref{encode}.
 
 \begin{algorithm}
     \caption{Encode}\label{encode}
