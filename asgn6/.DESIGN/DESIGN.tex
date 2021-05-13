@@ -1,0 +1,114 @@
+\documentclass[12pt]{article}
+\usepackage{charter} % font
+\usepackage[margin=1in]{geometry} % margin
+\usepackage{varioref} % "on the next page" label decoration
+\usepackage{hyperref} % hyperlinks
+\usepackage{enumitem} % Enumeration
+\usepackage{float} % table placement
+
+\usepackage[lined,dotocloa]{algorithm2e} % Pseudocode
+\labelformat{algocf}{\textit{alg.}\,(#1)}
+
+% Questions
+\newenvironment{QandA}{\begin{enumerate}[label=\bfseries\alph*.]\bfseries}
+{\end{enumerate}}
+\newenvironment{answered}{\par\normalfont}{}
+\usepackage{lipsum}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{%
+    \textbf{Assignment 6 \\ 
+        Huffman Coding \\
+\large DESIGN DOCUMENT} }
+\author{Zack Traczyk \\ CSE13S - Spring 2021}
+\date{Due: May 23\textsuperscript{th} at 11:59 pm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\maketitle
+
+\section{Objective}
+
+
+\section{Given}
+
+\begin{itemize}
+    \item{Header files for stack}
+    \item{Pseudocode for recursive search}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Programs}
+
+\subsection{Encode}
+
+\begin{itemize}
+    \item{-h : Command line options}
+    \item{-i infile : The file containing bytes to be encoded (default is stdin)}
+    \item{-o outfile : The output file to store encoded bytes (default is stdout)}
+\end{itemize}
+
+\subsection{Decode}
+
+\begin{itemize}
+    \item{-h : Command line options }
+    \item{-v : Prints statists of the decoding process to stderr}
+    \item{-i infile : The file containing bytes to be decoded (default is stdin)}
+    \item{-o outfile : The output file to store decoded bytes (default is stdout)}
+\end{itemize}
+
+\subsection{Entropy}
+
+The source code for this program is provided in the class resources repository.
+Entropy calculates the entropy, or variation of contents, for a file.
+
+\section{Parse}
+
+Program arguments are parsed and stored using flags.
+A set is not used since the order of the inputs is irrelevant and the parsed data
+will ultimately be stored in variables anyway.
+
+After program arguments are parsed the input file is parsed with encode or decode.
+Execution happens with every grab of a byte to the buffer.
+Refer to execute for how the algorithm works.
+
+\section{Execute}
+
+\subsection{Encode}
+
+For encode, the parsed byte is divided into an upper and lower nibble. 
+Then, the lower nibble is encoded and the byte is written to file out.
+The same is done for the upper byte.
+This process is repeated until the entire file is parsed. The pseudocode
+is shown in \vref{encode}.
+
+\begin{algorithm}
+    \caption{Encode}\label{encode}
+\end{algorithm}
+
+Encoding a nibble requires 3 main steps: converting a nibble to a bit
+vector, multiplying by the encoding matrix, then converting the resulting
+matrix back into a byte. This process requires a BitMatrix implementation which then 
+requires a BitVector implementation to function.
+Both the Bitvector and BitMatrix functions are explained in detail in the lab document
+so they will not be discussed here.
+
+\subsection{Decode}
+
+Decode is (unsurprisingly) the opposite of encode. After one byte is
+parsed, it is decoded and stored in a variable last.
+Every even odd iteration, a byte is parsed and decoded like before,
+but instead of storing in last, the function pack\_byte is called
+and puts the last nibble and current nibble together and writes to
+stdout.
+The pseduocode is shown in \vref{decode}.
+
+\begin{algorithm}
+    \caption{Decode}\label{decode}
+\end{algorithm}
+
+\end{document}

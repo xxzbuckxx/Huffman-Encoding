@@ -1,9 +1,10 @@
 #include "stack.h"
+
 #include "node.h"
 
-#include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h> // malloc
 
 //
@@ -48,7 +49,6 @@ void stack_delete(Stack **s) {
     return;
 }
 
-
 //
 // Returns if stack is empty or not
 //
@@ -82,7 +82,7 @@ uint32_t stack_size(Stack *s) {
 // s: stack to push item to
 // n: Node to add to stack
 //
-bool stack_push(Stack *s, Node *n){
+bool stack_push(Stack *s, Node *n) {
     if (stack_full(s)) { // can not add to a full stack
         return false;
     }
@@ -97,7 +97,7 @@ bool stack_push(Stack *s, Node *n){
 // s: the stack to pop from
 // x: the address to store the popped Node
 //
-bool stack_pop(Stack *s, Node **n){
+bool stack_pop(Stack *s, Node **n) {
     if (stack_empty(s)) { // can not pop from an empty stack
         return false;
     }

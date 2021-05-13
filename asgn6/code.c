@@ -4,8 +4,8 @@
 #include <stdio.h>
 
 Code code_init(void) {
-    uint8_t bits[MAX_CODE_SIZE] = {0};
-    Code c = {0, {*bits}}; // seems hacky should fix
+    uint8_t bits[MAX_CODE_SIZE] = { 0 };
+    Code c = { 0, { *bits } }; // seems hacky should fix
     return c;
 }
 

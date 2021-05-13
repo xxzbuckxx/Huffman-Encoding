@@ -1,5 +1,7 @@
 #include "node.h"
 
+#include "node_extnd.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -17,6 +19,15 @@ Node *node_create(uint8_t symbol, uint64_t frequency) {
     }
     n->left = n->right = NULL;
     return n;
+}
+
+//
+// Returns node frequency
+//
+// n: an adress to an address of a Node
+//
+uint64_t node_frequency(Node *n) {
+    return n ? n->frequency : 0;
 }
 
 //

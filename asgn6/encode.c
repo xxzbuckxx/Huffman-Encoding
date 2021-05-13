@@ -1,7 +1,8 @@
+#include "code.h"
 #include "io.h"
 #include "node.h"
+#include "pq.h"
 #include "stack.h"
-#include "code.h"
 
 #include <fcntl.h>
 #include <stdbool.h>
@@ -35,25 +36,62 @@ int main(int argc, char **argv) {
     int opt = 0;
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
         switch (opt) {
-            case 'h':
-                printf(HELP);
-                return 0;
-                break;
-            case 'v': verbose = true; break;
-            case 'i':
-                      if ((file_in = open(optarg, O_RDONLY)) == -1) {
-                          printf(FILE_NOT_FOUND);
-                          return 1; // error
-                      }
-                      break;
-            case 'o':
-                      if ((file_out = open(optarg, O_WRONLY | O_TRUNC)) == -1) {
-                          printf(FILE_NOT_FOUND);
-                          return 1; // error
-                      }
-                      break;
-            default: return 1; // error
+        case 'h':
+            printf(HELP);
+            return 0;
+            break;
+        case 'v': verbose = true; break;
+        case 'i':
+            if ((file_in = open(optarg, O_RDONLY)) == -1) {
+                printf(FILE_NOT_FOUND);
+                return 1; // error
+            }
+            break;
+        case 'o':
+            if ((file_out = open(optarg, O_WRONLY | O_TRUNC)) == -1) {
+                printf(FILE_NOT_FOUND);
+                return 1; // error
+            }
+            break;
+        default: return 1; // error
         }
+    }
+
+    PriorityQueue *q = pq_create(10);
+
+    Node *a = node_create('a', 1);
+    Node *b = node_create('b', 2);
+    Node *c = node_create('c', 3);
+    Node *d = node_create('d', 4);
+    Node *e = node_create('e', 5);
+    Node *f = node_create('f', 6);
+    Node *g = node_create('g', 10);
+    Node *h = node_create('h', 8);
+    Node *i = node_create('i', 8);
+    Node *j = node_create('j', 8);
+    Node *k = node_create('k', 8);
+
+    enqueue(q, h);
+    enqueue(q, g);
+    enqueue(q, i);
+    enqueue(q, f);
+    enqueue(q, b);
+    enqueue(q, d);
+    enqueue(q, e);
+    enqueue(q, j);
+    enqueue(q, a);
+    enqueue(q, c);
+    enqueue(q, k);
+
+    pq_print(q);
+
+    /* pq_print(q); */
+
+    Node *p;
+    while (!pq_empty(q)) {
+        dequeue(q, &p);
+        node_print(p);
+        pq_print(q);
     }
 
     // Transfer File permissions
