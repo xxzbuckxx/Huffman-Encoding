@@ -78,7 +78,7 @@ bool pq_full(PriorityQueue *q) {
 // s: the PriorityQueue to return the size of
 //
 uint32_t pq_size(PriorityQueue *q) {
-    return (q && q->min_heap) ? q->top : 0; //if PriorityQueue exists and has items
+    return (q && q->min_heap) ? q->top - 1: 0; //if PriorityQueue exists and has items
 }
 
 bool enqueue(PriorityQueue *q, Node *n) {
@@ -104,7 +104,7 @@ bool enqueue(PriorityQueue *q, Node *n) {
 }
 
 bool dequeue(PriorityQueue *q, Node **n) {
-    if (pq_empty(q)) {
+    if (pq_size(q) == 0) {
         return false;
     }
 
@@ -144,7 +144,8 @@ bool dequeue(PriorityQueue *q, Node **n) {
 }
 
 void pq_print(PriorityQueue *q) {
-    for (uint32_t i = 0; i < q->top; i += 1) { // iterate through item indices
+    for (uint32_t i = 1; i < q->top; i += 1) { // iterate through item indices
+        /* node_print(q->min_heap[i]); */
         printf("%ld", node_frequency(q->min_heap[i]));
         if (i + 1 != q->top) { // do not print newline for last case
             printf(" ");

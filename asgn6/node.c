@@ -59,9 +59,9 @@ Node *node_join(Node *left, Node *right) {
 // n: an address of a node to be stored
 //
 void node_print(Node *n) {
-    printf("   %c:%ld\n", n->symbol, n->frequency);
+    printf("%c:%ld\n", n->symbol, n->frequency);
     if (n->left != NULL && n->right != NULL) {
-        printf("   /  \\\n%c:%ld   %c:%ld\n", n->left->symbol, n->left->frequency, n->right->symbol,
+        printf("left:[%c:%ld]   right:[%c:%ld]\n", n->left->symbol, n->left->frequency, n->right->symbol,
             n->right->frequency);
     }
     return;
