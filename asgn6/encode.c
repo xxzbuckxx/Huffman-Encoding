@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
     /* } */
 
     // Parse
-    uint64_t hist[ALPHABET] = {0};
+    uint64_t hist[ALPHABET] = { 0 };
     uint8_t buf = 0; // character
     while (true) {
         if (read_bytes(file_in, &buf, 1) == 0) { // if bu
@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
         }
         hist[buf]++; // increment frequency of character in histogram
     }
-    
+
     Node *root = build_tree(hist);
     node_print(root);
 

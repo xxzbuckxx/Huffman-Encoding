@@ -1,10 +1,11 @@
 #include "huffman.h"
+
 #include "pq.h"
 
 Node *build_tree(uint64_t hist[static ALPHABET]) {
 
     // Create PriorityQueue from histogram
-    PriorityQueue *q = pq_create(ALPHABET);     
+    PriorityQueue *q = pq_create(ALPHABET);
     for (uint64_t i = 0; i < 256; i++) {
         if (hist[i] != 0) {
             Node *n = node_create(i, hist[i]);
@@ -35,4 +36,3 @@ void build_codes(Node *root, Code table[static ALPHABET]);
 Node *rebuild_tree(uint16_t nbytes, uint8_t tree[static nbytes]);
 
 void delete_tree(Node **root);
-

@@ -78,7 +78,7 @@ bool pq_full(PriorityQueue *q) {
 // s: the PriorityQueue to return the size of
 //
 uint32_t pq_size(PriorityQueue *q) {
-    return (q && q->min_heap) ? q->top - 1: 0; //if PriorityQueue exists and has items
+    return (q && q->min_heap) ? q->top - 1 : 0; //if PriorityQueue exists and has items
 }
 
 bool enqueue(PriorityQueue *q, Node *n) {

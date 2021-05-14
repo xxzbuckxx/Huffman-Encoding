@@ -61,8 +61,8 @@ Node *node_join(Node *left, Node *right) {
 void node_print(Node *n) {
     printf("%c:%ld\n", n->symbol, n->frequency);
     if (n->left != NULL && n->right != NULL) {
-        printf("left:[%c:%ld]   right:[%c:%ld]\n", n->left->symbol, n->left->frequency, n->right->symbol,
-            n->right->frequency);
+        printf("left:[%c:%ld]   right:[%c:%ld]\n", n->left->symbol, n->left->frequency,
+            n->right->symbol, n->right->frequency);
     }
     return;
 }
