@@ -122,27 +122,21 @@ Refer to execute for how the algorithm works.
 \subsection{Encode}
 
 Compressing a file requires a few steps. First, a histogram is constructed of the
-most used files. \vref{encode}.
+most used characters. Once each character has a frequency, the histogram elements
+are converted to nodes and enqueued into a priority queue. Then, two nodes are 
+popped off at at time and joined together and queued back into the priority
+queue until only one node remains. This last node is the root to the Huffman
+tree. Finally the Huffman coding happens as the tree is traversed and codes
+are assigned to all the characters.\vref{encode}.
 
 \begin{algorithm}
     \caption{Encode}\label{encode}
 \end{algorithm}
 
-Encoding a nibble requires 3 main steps: converting a nibble to a bit
-vector, multiplying by the encoding matrix, then converting the resulting
-matrix back into a byte. This process requires a BitMatrix implementation which then 
-requires a BitVector implementation to function.
-Both the Bitvector and BitMatrix functions are explained in detail in the lab document
-so they will not be discussed here.
-
 \subsection{Decode}
 
-Decode is (unsurprisingly) the opposite of encode. After one byte is
-parsed, it is decoded and stored in a variable last.
-Every even odd iteration, a byte is parsed and decoded like before,
-but instead of storing in last, the function pack\_byte is called
-and puts the last nibble and current nibble together and writes to
-stdout.
+Decode is (unsurprisingly) the opposite of encode. Codes are read from the file
+and decoded.
 The pseduocode is shown in \vref{decode}.
 
 \begin{algorithm}
