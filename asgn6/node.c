@@ -1,5 +1,4 @@
 #include "node.h"
-
 #include "node_extnd.h"
 
 #include <stdio.h>
@@ -30,6 +29,10 @@ uint64_t node_frequency(Node *n) {
     return n ? n->frequency : 0;
 }
 
+uint8_t node_symbol(Node *n) {
+    return n ? n->symbol : 0;
+}
+
 //
 // Delete a Node
 //
@@ -51,6 +54,14 @@ Node *node_join(Node *left, Node *right) {
     n->left = left;
     n->right = right;
     return n;
+}
+
+Node *node_left(Node *n) {
+    return n && n->left ? n->left : NULL;
+}
+
+Node *node_right(Node *n) {
+    return n && n->right ? n->right : NULL;
 }
 
 //

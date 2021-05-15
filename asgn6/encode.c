@@ -64,6 +64,8 @@ int main(int argc, char **argv) {
 
     // Parse
     uint64_t hist[ALPHABET] = { 0 };
+    hist[0] = 1;
+    hist[255] = 1;
     uint8_t buf = 0; // character
     while (true) {
         if (read_bytes(file_in, &buf, 1) == 0) { // if bu
@@ -72,9 +74,19 @@ int main(int argc, char **argv) {
         hist[buf]++; // increment frequency of character in histogram
     }
 
+    // Create tree
     Node *root = build_tree(hist);
     node_print(root);
 
+    // Create codes
+    Code table[ALPHABET];
+    build_codes(root, table);
+    
+    // Construct header
+
+    // Wirte tree
+
+    /* delete_tree(&root); */
     close(file_in);
     close(file_out);
 
