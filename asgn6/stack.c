@@ -6,7 +6,7 @@
 #include <stdlib.h> // malloc
 
 //
-// Structure for defining stack data structure
+// Structure for defining Stack data structure
 //
 struct Stack {
     uint32_t top;
@@ -24,7 +24,7 @@ Stack *stack_create(uint32_t capacity) {
     if (s) { // if allocation successful
         s->top = 0;
         s->capacity = capacity;
-        s->items = (Node **) calloc(capacity, sizeof(Node));
+        s->items = (Node **) calloc(capacity, sizeof(Node *));
         if (!s->items) { // if no room in memory
             free(s);
             s = NULL; // Ensure pointer is not pointing to memory no longer used

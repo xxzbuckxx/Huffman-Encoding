@@ -2,7 +2,7 @@ ENCODE = encode
 DECODE = decode
 ENTROPY = entropy
 
-SOURCES = node.c pq.c code.c io.c stack.c huffman.c
+SOURCES = node.c pq.c code.c io.c stack.c huffman.c 
 OBJECTS = $(SOURCES:%.c=%.o)
 
 CC=clang

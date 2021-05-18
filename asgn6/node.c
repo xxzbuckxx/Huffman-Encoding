@@ -1,4 +1,5 @@
 #include "node.h"
+
 #include "node_extnd.h"
 
 #include <stdio.h>
@@ -15,8 +16,9 @@ Node *node_create(uint8_t symbol, uint64_t frequency) {
     if (n) {
         n->symbol = symbol;
         n->frequency = frequency;
+        n->right = NULL;
+        n->left = NULL;
     }
-    n->left = n->right = NULL;
     return n;
 }
 
@@ -39,7 +41,7 @@ uint8_t node_symbol(Node *n) {
 // n: an adress to an address of a Node
 //
 void node_delete(Node **n) {
-    free(&n);
+    free(*n);
     *n = NULL;
 }
 

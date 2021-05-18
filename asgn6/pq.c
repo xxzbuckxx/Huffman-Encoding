@@ -9,6 +9,9 @@
 
 // implemented using explanation from pages.cs.wisc.edu/~vernon/cs367/notes/11.PRIORITY-Q.html
 
+//
+// Structure for definign a PriorityQueue data structure
+//
 typedef struct PriorityQueue {
     Node **min_heap;
     uint32_t top;
@@ -25,7 +28,7 @@ PriorityQueue *pq_create(uint32_t capacity) {
     if (q) { // if allocation successful
         q->capacity = capacity;
         q->top = 1;
-        q->min_heap = (Node **) calloc(capacity, sizeof(Node));
+        q->min_heap = (Node **) calloc(capacity + 1, sizeof(Node *));
         if (!q->min_heap) { // if no room in memory
             free(q);
             q = NULL; // Ensure pointer is not pointing to memory no longer used
