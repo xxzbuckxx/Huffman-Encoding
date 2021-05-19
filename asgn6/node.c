@@ -22,18 +22,45 @@ Node *node_create(uint8_t symbol, uint64_t frequency) {
     return n;
 }
 
+// Helper Functions from node_extnd.h //
+
 //
-// Returns node frequency
+// Returns Node frequency
 //
-// n: an adress to an address of a Node
+// n: an adress to a Node
 //
 uint64_t node_frequency(Node *n) {
     return n ? n->frequency : 0;
 }
 
+// 
+// Returns Node symbol
+//
+// n: an address to a node
+//
 uint8_t node_symbol(Node *n) {
     return n ? n->symbol : 0;
 }
+
+// 
+// Returns left node
+//
+// n: an address to a node
+//
+Node *node_left(Node *n) {
+    return n && n->left ? n->left : NULL;
+}
+
+// 
+// Returns right node
+//
+// n: an address to a node
+//
+Node *node_right(Node *n) {
+    return n && n->right ? n->right : NULL;
+}
+
+///////////////////////////////////////
 
 //
 // Delete a Node
@@ -56,14 +83,6 @@ Node *node_join(Node *left, Node *right) {
     n->left = left;
     n->right = right;
     return n;
-}
-
-Node *node_left(Node *n) {
-    return n && n->left ? n->left : NULL;
-}
-
-Node *node_right(Node *n) {
-    return n && n->right ? n->right : NULL;
 }
 
 //

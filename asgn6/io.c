@@ -21,13 +21,13 @@ static uint8_t buf_code_idx_bit;
 //
 int read_bytes(int infile, uint8_t *buf, int nbytes) {
     int b_read = 0; // bytes read so far
-    int read_last = 0; // bytes read on last
+    int last_read = 0; // bytes read on last
 
     while ((b_read += read(infile, buf, nbytes - b_read)) < nbytes) {
-        if (read_last == b_read) {
+        if (last_read == b_read) { // if no bytes read
             break;
         }
-        read_last = b_read;
+        last_read = b_read;
     }
 
     return b_read;
@@ -42,7 +42,8 @@ int read_bytes(int infile, uint8_t *buf, int nbytes) {
 //
 int write_bytes(int outfile, uint8_t *buf, int nbytes) {
     // imp correct?
-    int b_written = 0;
+    int b_written = 0; // bytes written so far
+    int last_written = 0;
 
     if (outfile == 0) {
         return 0;
@@ -58,6 +59,12 @@ int write_bytes(int outfile, uint8_t *buf, int nbytes) {
     return bytes_written;
 }
 
+// 
+// Read bit by bit from a file
+//
+// infile: file to read from
+// bit: buffer to store bit
+//
 bool read_bit(int infile, uint8_t *bit) {
     static uint32_t buffer = BLOCK;
     uint8_t *buff = (uint8_t *) &buffer;
@@ -79,6 +86,12 @@ bool read_bit(int infile, uint8_t *bit) {
     return true;
 }
 
+// 
+// Write a Code to a file
+//
+// outfile: file to write top
+// c: an address to a code to write
+//
 void write_code(int outfile, Code *c) {
     if (code_size(c) + buf_code_idx >= BLOCK) {
         write_bytes(outfile, buf_code, buf_code_idx);
@@ -95,6 +108,11 @@ void write_code(int outfile, Code *c) {
     return;
 }
 
+//
+// Write any codes still in buffer
+//
+// outfile: file to write to
+//
 void flush_codes(int outfile) {
     write_bytes(outfile, buf_code, buf_code_idx);
     return;

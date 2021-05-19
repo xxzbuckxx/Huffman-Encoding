@@ -1,18 +1,18 @@
-#include "code.h"
-#include "defines.h"
-#include "header.h"
-#include "huffman.h"
-#include "io.h"
-#include "tree_info.h"
+#include "code.h" // Code ADT
+#include "defines.h" // BLOCK, MAGIC, ALPHABET, etc.
+#include "header.h" // file header
+#include "huffman.h" // Huffman tree construction and traversal
+#include "io.h" // writing and reading files
+#include "tree_info.h" // tree buffer and size
 
-#include <fcntl.h>
-#include <stdbool.h>
+#include <fcntl.h> // open/close file
+#include <stdbool.h> // boolean
 #include <stdio.h> // Printing
 #include <stdlib.h>
-#include <sys/stat.h>
+#include <sys/stat.h> // file properties
 #include <unistd.h> // For getopt()
 
-#define OPTIONS "hi:o:v:"
+#define OPTIONS "hi:o:v"
 
 #define FILE_NOT_FOUND "File not found ;(\n"
 
@@ -135,7 +135,15 @@ int main(int argc, char **argv) {
     }
     flush_codes(file_out);
 
-    printf("verbose? %d", verbose);
+    // Print statistics
+    if (verbose) {
+        printf("Uncompressed file size: %lu bytes\n", h.file_size);
+        fstat(file_out, &statbuf);
+        printf("Compressed file size: %lu bytes\n", statbuf.st_size);
+        printf("Space saving: %2.2f%%\n", 100 * (1 - ((double)statbuf.st_size/(double)h.file_size)));
+    }
+
+    // Clean exit
     delete_tree(&root);
     close(file_in);
     close(file_out);
