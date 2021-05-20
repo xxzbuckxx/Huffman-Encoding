@@ -78,9 +78,13 @@ int main(int argc, char **argv) {
         }
     }
 
+    printf("HISTOGRAM CREATED\n");
+
     // Create tree
 
     Node *root = build_tree(hist);
+
+    printf("TREE CREATED\n");
 
     // Construct header
     Header h = { MAGIC, statbuf.st_mode, tree_size, statbuf.st_size };
@@ -108,6 +112,8 @@ int main(int argc, char **argv) {
 
     write_bytes(file_out, buf_header, 16);
 
+    printf("HEADER WRITEN\n");
+
     // Create codes
 
     // Populate a table with empty codes
@@ -117,6 +123,8 @@ int main(int argc, char **argv) {
     }
 
     build_codes(root, table); // create codes
+
+    printf("CODES CREATED\n");
 
     // Write tree
     if (buf_tree_idx != 0) {
@@ -129,7 +137,9 @@ int main(int argc, char **argv) {
     uint8_t buf_encode[BLOCK] = { 0 };
     length = 0;
     while ((length = read_bytes(file_in, buf_encode, BLOCK)) > 0) {
+        /* printf("\n\nREAD AGAIN\n\n"); */
         for (int i = 0; i < length; i++) {
+            /* printf("\n\n%d read\n\n", length); */
             write_code(file_out, &table[buf_encode[i]]);
         }
     }

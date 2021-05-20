@@ -88,7 +88,10 @@ bool read_bit(int infile, uint8_t *bit) {
 //
 void write_code(int outfile, Code *c) {
     if (code_size(c) + buf_code_idx + 1 >= BLOCK) {
+        // include beginnnig of next code
         write_bytes(outfile, buf_code, buf_code_idx + (buf_code_idx_bit > 0 ? 1 : 0));
+        buf_code_idx = 0;
+        buf_code_idx_bit = 0;
     }
 
     for (uint64_t i = 0; i < code_size(c); i++) {
@@ -98,6 +101,8 @@ void write_code(int outfile, Code *c) {
             buf_code_idx_bit = 0;
         }
     }
+
+    /* printf("code written with size %d", code_size(c)); */
 
     return;
 }
