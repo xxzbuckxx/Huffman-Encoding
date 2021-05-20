@@ -5,7 +5,7 @@
 #include "io.h" // writing and reading files
 #include "tree_info.h" // tree buffer and size
 
-#include <fcntl.h> // open/close file
+#include <fcntl.h> // open and close
 #include <stdbool.h> // boolean
 #include <stdio.h> // Printing
 #include <stdlib.h>
@@ -137,10 +137,12 @@ int main(int argc, char **argv) {
 
     // Print statistics
     if (verbose) {
-        printf("Uncompressed file size: %lu bytes\n", h.file_size);
-        fstat(file_out, &statbuf);
-        printf("Compressed file size: %lu bytes\n", statbuf.st_size);
-        printf("Space saving: %2.2f%%\n", 100 * (1 - ((double)statbuf.st_size/(double)h.file_size)));
+        uint64_t comp_size = bytes_written;
+        uint8_t *uncomp_text = (uint8_t *) "Uncompressed text: ";
+        write_bytes(STDERR_FILENO, uncomp_text, 19);
+        printf("%lu bytes\n", h.file_size);
+        printf("Compressed file size: %lu bytes\n", comp_size);
+        printf("Space saving: %2.2f%%\n", 100 * (1 - ((double)comp_size/(double)h.file_size)));
     }
 
     // Clean exit

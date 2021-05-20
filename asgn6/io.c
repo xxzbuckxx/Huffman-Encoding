@@ -3,11 +3,11 @@
 #include "defines.h"
 
 #include <fcntl.h> // open and close
-#include <stdio.h>
+#include <stdio.h> // Printing
 #include <unistd.h> // read and write
 
-uint64_t bytes_read = 0;
-uint64_t bytes_written = 0;
+uint64_t bytes_read = 0; // total bytes read
+uint64_t bytes_written = 0; // total bytes written
 static uint8_t buf_code[BLOCK];
 static uint64_t buf_code_idx;
 static uint8_t buf_code_idx_bit;
@@ -27,7 +27,7 @@ int read_bytes(int infile, uint8_t *buf, int nbytes) {
         if (last_read == b_read) { // if no bytes read
             break;
         }
-        last_read = b_read;
+        bytes_read += last_read = b_read;
     }
 
     return b_read;
@@ -41,21 +41,17 @@ int read_bytes(int infile, uint8_t *buf, int nbytes) {
 // nbytes: number of bytes to write
 //
 int write_bytes(int outfile, uint8_t *buf, int nbytes) {
-    // imp correct?
     int b_written = 0; // bytes written so far
-    int last_written = 0;
+    int last_written = 0; // bytes written on last
 
-    if (outfile == 0) {
-        return 0;
-    }
-
-    while (b_written < nbytes) {
-        b_written += write(outfile, buf, nbytes - b_written);
-        if (b_written == 0) {
+    while ((b_written += write(outfile, buf, nbytes - b_written)) < nbytes) {
+        if (last_written == b_written) { // if no bytes written
             break;
         }
+        last_written = b_written;
     }
 
+    bytes_written += (uint64_t) b_written;
     return bytes_written;
 }
 
@@ -75,9 +71,7 @@ bool read_bit(int infile, uint8_t *bit) {
         buff = (uint8_t *) &buffer;
     }
 
-    *bit = 1 & (buffer >> bi);
-
-    bi++;
+    *bit = 1 & (buffer >> bi++);
 
     if (bi > 7) {
         bi = 0;
@@ -93,8 +87,8 @@ bool read_bit(int infile, uint8_t *bit) {
 // c: an address to a code to write
 //
 void write_code(int outfile, Code *c) {
-    if (code_size(c) + buf_code_idx >= BLOCK) {
-        write_bytes(outfile, buf_code, buf_code_idx);
+    if (code_size(c) + buf_code_idx + 1 >= BLOCK) {
+        write_bytes(outfile, buf_code, buf_code_idx + (buf_code_idx_bit > 0 ? 1 : 0));
     }
 
     for (uint64_t i = 0; i < code_size(c); i++) {
@@ -114,6 +108,6 @@ void write_code(int outfile, Code *c) {
 // outfile: file to write to
 //
 void flush_codes(int outfile) {
-    write_bytes(outfile, buf_code, buf_code_idx);
+        write_bytes(outfile, buf_code, buf_code_idx + (buf_code_idx_bit > 0 ? 1 : 0));
     return;
 }
