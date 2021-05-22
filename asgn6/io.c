@@ -6,11 +6,14 @@
 #include <stdio.h> // Printing
 #include <unistd.h> // read and write
 
+// global
 uint64_t bytes_read = 0; // total bytes read
 uint64_t bytes_written = 0; // total bytes written
-static uint8_t buf_code[BLOCK];
-static uint64_t buf_code_idx;
-static uint8_t buf_code_idx_bit;
+
+// private
+uint8_t buf_code[BLOCK];
+uint64_t buf_code_idx = 1;
+uint8_t buf_code_idx_bit = 0;
 
 //
 // Read bytes from a file
@@ -87,23 +90,23 @@ bool read_bit(int infile, uint8_t *bit) {
 // c: an address to a code to write
 //
 void write_code(int outfile, Code *c) {
-    if (code_size(c) + buf_code_idx + 1 >= BLOCK) {
-        // include beginnnig of next code
-        write_bytes(outfile, buf_code, buf_code_idx + (buf_code_idx_bit > 0 ? 1 : 0));
-        buf_code_idx = 0;
-        buf_code_idx_bit = 0;
-    }
-
     for (uint64_t i = 0; i < code_size(c); i++) {
-        buf_code[buf_code_idx] |=  ((c->bits[i/8] >> i % 8) & 1)  << buf_code_idx_bit++;
+        buf_code[buf_code_idx-1] |=  ((c->bits[i/8] >> i % 8) & 1)  << buf_code_idx_bit++;
         if (buf_code_idx_bit >= 8) {
+            buf_code[buf_code_idx] = 0;
             buf_code_idx++;
             buf_code_idx_bit = 0;
+        }
+        if (buf_code_idx > BLOCK) {
+            // include beginning of next code
+            write_bytes(outfile, buf_code, buf_code_idx);
+            buf_code_idx_bit = 0;
+            buf_code_idx = 0;
+            /* printf("bit: %d ; idx: %lu\n", buf_code_idx_bit, buf_code_idx); */
         }
     }
 
     /* printf("code written with size %d", code_size(c)); */
-
     return;
 }
 
@@ -113,6 +116,6 @@ void write_code(int outfile, Code *c) {
 // outfile: file to write to
 //
 void flush_codes(int outfile) {
-        write_bytes(outfile, buf_code, buf_code_idx + (buf_code_idx_bit > 0 ? 1 : 0));
+    write_bytes(outfile, buf_code, buf_code_idx);
     return;
 }

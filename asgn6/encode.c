@@ -84,8 +84,6 @@ int main(int argc, char **argv) {
 
     Node *root = build_tree(hist);
 
-    printf("TREE CREATED\n");
-
     // Construct header
     Header h = { MAGIC, statbuf.st_mode, tree_size, statbuf.st_size };
     uint8_t buf_header[16];
@@ -112,8 +110,6 @@ int main(int argc, char **argv) {
 
     write_bytes(file_out, buf_header, 16);
 
-    printf("HEADER WRITEN\n");
-
     // Create codes
 
     // Populate a table with empty codes
@@ -123,8 +119,6 @@ int main(int argc, char **argv) {
     }
 
     build_codes(root, table); // create codes
-
-    printf("CODES CREATED\n");
 
     // Write tree
     if (buf_tree_idx != 0) {
@@ -138,8 +132,8 @@ int main(int argc, char **argv) {
     length = 0;
     while ((length = read_bytes(file_in, buf_encode, BLOCK)) > 0) {
         /* printf("\n\nREAD AGAIN\n\n"); */
+        /* printf("\n\n%d read\n\n", length); */
         for (int i = 0; i < length; i++) {
-            /* printf("\n\n%d read\n\n", length); */
             write_code(file_out, &table[buf_encode[i]]);
         }
     }
@@ -148,9 +142,7 @@ int main(int argc, char **argv) {
     // Print statistics
     if (verbose) {
         uint64_t comp_size = bytes_written;
-        uint8_t *uncomp_text = (uint8_t *) "Uncompressed text: ";
-        write_bytes(STDERR_FILENO, uncomp_text, 19);
-        printf("%lu bytes\n", h.file_size);
+        printf("Uncompressed file size: %lu bytes\n", h.file_size);
         printf("Compressed file size: %lu bytes\n", comp_size);
         printf("Space saving: %2.2f%%\n", 100 * (1 - ((double)comp_size/(double)h.file_size)));
     }
