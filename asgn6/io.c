@@ -97,7 +97,10 @@ void write_code(int outfile, Code *c) {
             buf_code_idx++;
             buf_code_idx_bit = 0;
         }
+            if (buf_code_idx > BLOCK) {
+            }
         if (buf_code_idx > BLOCK) {
+                printf("rn shorty is %c\n", buf_code[buf_code_idx - 1]);
             // include beginning of next code
             write_bytes(outfile, buf_code, buf_code_idx);
             buf_code_idx_bit = 0;
@@ -116,6 +119,7 @@ void write_code(int outfile, Code *c) {
 // outfile: file to write to
 //
 void flush_codes(int outfile) {
+                printf("rn shorty is %c\n", buf_code[buf_code_idx - 0]);
     write_bytes(outfile, buf_code, buf_code_idx);
     return;
 }
