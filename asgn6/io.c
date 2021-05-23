@@ -1,6 +1,7 @@
 #include "io.h"
 
 #include "defines.h"
+#include "io_extnd.h"
 
 #include <fcntl.h> // open and close
 #include <stdio.h> // Printing
@@ -30,9 +31,10 @@ int read_bytes(int infile, uint8_t *buf, int nbytes) {
         if (last_read == b_read) { // if no bytes read
             break;
         }
-        bytes_read += last_read = b_read;
+        last_read = b_read;
     }
 
+    bytes_read += (uint64_t) b_read;
     return b_read;
 }
 
@@ -58,32 +60,70 @@ int write_bytes(int outfile, uint8_t *buf, int nbytes) {
     return bytes_written;
 }
 
-// 
+int read_header(int infile, Header *h) {
+    uint64_t b_read = 0; // bytes read so far
+    uint64_t last_read = 0; // bytes read on last
+
+    while ((b_read += read(infile, h, sizeof(Header) - b_read)) < sizeof(Header)) {
+        if (last_read == b_read) { // if no bytes read
+            break;
+        }
+        last_read = b_read;
+    }
+
+    bytes_read += b_read;
+    return b_read;
+}
+
+int write_header(int outfile, Header *h) {
+    uint64_t b_written = 0; // bytes written so far
+    uint64_t last_written = 0; // bytes written on last
+
+    while ((b_written += write(outfile, h, sizeof(Header) - b_written)) < sizeof(Header)) {
+        if (last_written == b_written) { // if no bytes written
+            break;
+        }
+        last_written = b_written;
+    }
+
+    bytes_written += b_written;
+    return bytes_written;
+}
+
+//
 // Read bit by bit from a file
 //
 // infile: file to read from
 // bit: buffer to store bit
 //
 bool read_bit(int infile, uint8_t *bit) {
-    static uint32_t buffer = BLOCK;
-    uint8_t *buff = (uint8_t *) &buffer;
-    static uint32_t bi = 0;
+    static uint8_t buf[BLOCK];
+    static uint64_t read = 0;
+    static uint64_t buf_idx = 0;
+    static uint8_t buf_bit = 0;
 
-    if (bi == 0 && (read_bytes(infile, buff, 1)) == 0) {
-        return false;
-        buff = (uint8_t *) &buffer;
+    /* printf("reading bit\n"); */
+
+    if ((buf_idx == 0 && buf_bit == 0) || buf_idx >= read) {
+        /* printf("filling buffer bit\n"); */
+        if ((read = read_bytes(infile, buf, BLOCK)) == 0) {
+            return false;
+        }
+        buf_bit = 0;
+        buf_idx = 0;
     }
 
-    *bit = 1 & (buffer >> bi++);
+    *bit = 1 & (buf[buf_idx] >> buf_bit++);
 
-    if (bi > 7) {
-        bi = 0;
+    if (buf_bit > 7) {
+        buf_bit = 0;
+        buf_idx++;
     }
 
     return true;
 }
 
-// 
+//
 // Write a Code to a file
 //
 // outfile: file to write top
@@ -94,7 +134,7 @@ void write_code(int outfile, Code *c) {
         if (buf_code_idx_bit == 0) {
             buf_code[buf_code_idx] = 0;
         }
-        buf_code[buf_code_idx] |=  ((c->bits[i/8] >> i % 8) & 1)  << buf_code_idx_bit++;
+        buf_code[buf_code_idx] |= ((c->bits[i / 8] >> i % 8) & 1) << buf_code_idx_bit++;
         if (buf_code_idx_bit >= 8) {
             buf_code_idx++;
             buf_code_idx_bit = 0;

@@ -68,7 +68,7 @@ void dfs(Code table[static ALPHABET], Node *curr, Code c, uint8_t go) {
         first_call = false;
     }
 
-    if (buf_tree_idx >= BLOCK - 2){
+    if (buf_tree_idx >= BLOCK - 2) {
         write_bytes(tree_out, buf_tree, buf_tree_idx);
         buf_tree_idx = 0;
     }
@@ -98,7 +98,30 @@ void build_codes(Node *root, Code table[static ALPHABET]) {
     return;
 }
 
-Node *rebuild_tree(uint16_t nbytes, uint8_t tree[static nbytes]);
+Node *rebuild_tree(uint16_t nbytes, uint8_t tree[static nbytes]) {
+    Stack *tree_out = stack_create(nbytes / 3); // point of error?
+    uint64_t i = 0;
+    while (i < nbytes) {
+        if (tree[i] == 'L') {
+            stack_push(tree_out, node_create(tree[++i], 0));
+        } else {
+            // Pop Right
+            Node *r;
+            stack_pop(tree_out, &r);
+
+            // Pop Left
+            Node *l;
+            stack_pop(tree_out, &l);
+
+            // Join
+            stack_push(tree_out, node_join(l, r));
+        }
+        i++;
+    }
+    Node *root;
+    stack_pop(tree_out, &root);
+    return root;
+}
 
 //
 // Recursive depth first delete of Huffman tree

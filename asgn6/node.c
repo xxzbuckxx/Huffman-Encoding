@@ -33,7 +33,7 @@ uint64_t node_frequency(Node *n) {
     return n ? n->frequency : 0;
 }
 
-// 
+//
 // Returns Node symbol
 //
 // n: an address to a node
@@ -42,7 +42,7 @@ uint8_t node_symbol(Node *n) {
     return n ? n->symbol : 0;
 }
 
-// 
+//
 // Returns left node
 //
 // n: an address to a node
@@ -51,7 +51,7 @@ Node *node_left(Node *n) {
     return n && n->left ? n->left : NULL;
 }
 
-// 
+//
 // Returns right node
 //
 // n: an address to a node

@@ -16,7 +16,7 @@ encode: encode.o $(OBJECTS)
 decode: decode.o $(OBJECTS)
 	$(CC) -o $@ $^ $(LFLAGS)
 
-entropy: entropy.o $(OBJECTS)
+entropy: entropy.o
 	$(CC) -o $@ $^ $(LFLAGS) -lm
 
 %.o: %.clean
