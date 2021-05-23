@@ -83,9 +83,8 @@ int main(int argc, char **argv) {
     Node *root = rebuild_tree(h.tree_size, tree);
     free(tree);
 
-    /* uint8_t buf[BLOCK] = { 0 }; */
-    /* uint64_t buf_idx = 0; */
-    /* int length = 0; */
+    uint8_t buf[BLOCK] = { 0 };
+    uint64_t buf_idx = 0;
     uint8_t bit = 0;
     /* uint64_t i = 0; */
     Node *curr = root;
@@ -97,21 +96,18 @@ int main(int argc, char **argv) {
         }
 
         if (node_left(curr) == NULL) {
-            printf("%c", node_symbol(curr));
+            buf[buf_idx++] = node_symbol(curr);
             curr = root;
-        }
 
-        /* printf("%d", bit); */
-        /* if ((++i % 8) == 0) { */
-        /* printf("\n"); */
-        /* } */
+            if (buf_idx >= BLOCK) {
+                write_bytes(file_out, buf, buf_idx);
+                buf_idx = 0;
+            }
+        }
     }
-    /* while ((length = read_bytes(file_in, buf, BLOCK)) > 0) { */
-    /*     for (int i = 0; i < length; i++) { */
-    /*         printf("%c", buf[i]); */
-    /*         /1* [buf[i]]++; // increment frequency of character in histogram *1/ */
-    /*     } */
-    /* } */
+
+    // Flush decoded bytes
+    write_bytes(file_out, buf, buf_idx);
     /* uint64_t uncomp_size = bytes_read; */
 
     delete_tree(&root);
