@@ -131,8 +131,6 @@ int main(int argc, char **argv) {
     uint8_t buf_encode[BLOCK] = { 0 };
     length = 0;
     while ((length = read_bytes(file_in, buf_encode, BLOCK)) > 0) {
-        /* printf("\n\nREAD AGAIN\n\n"); */
-        /* printf("\n\n%d read\n\n", length); */
         for (int i = 0; i < length; i++) {
             write_code(file_out, &table[buf_encode[i]]);
         }
