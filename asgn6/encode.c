@@ -17,7 +17,7 @@
 #define FILE_NOT_FOUND "File not found ;(\n"
 
 #define HELP                                                                                       \
-    "SYNOPSIS\n  A hamming(8,4) code encoder.\n\nUSAGE\n  pipe or specify a file to "              \
+    "SYNOPSIS\n  A Huffman code encoder.\n\nUSAGE\n  pipe or specify a file to "                   \
     "encode.\n\nOPTIONS\n  -h               Program usage and help.\n  -i               Input "    \
     "file: file that to be encoded.\n  -o               Output file: file that stores the "        \
     "encoding.\n"

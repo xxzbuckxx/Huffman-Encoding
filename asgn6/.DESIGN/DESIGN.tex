@@ -314,11 +314,12 @@ can be seen in \vref{encode}.
 
 \subsection{Decode}
 
-Decode is (unsurprisingly) the opposite of encode. Codes are read from the file
-and decoded.
-
-\begin{algorithm}
-	\caption{Decode}\label{decode}
-\end{algorithm}
+Decode is (unsurprisingly) the opposite of encode. First the magic number is checked
+to ensure the file is infact an encoded compressed file. Then permissions are grabbed
+and the tree is reconstructed using the tree size from the written header. 
+Then, Codes are read from the file into a buffer of BLOCK size. The tree is traversed
+given the bits in the buffer and once a leaf is hit the found character is added to a buffer.
+When the code bits buffer is fully read then it is refilled. When the buffer for decoded characters
+is filled it is written to fileout.
 
 \end{document}
