@@ -38,19 +38,19 @@ int main(int argc, char **argv) {
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
         switch (opt) {
         case 'h':
-            printf(HELP);
+            fprintf(stderr, HELP);
             return 0;
             break;
         case 'v': verbose = true; break;
         case 'i':
             if ((file_in = open(optarg, O_RDONLY)) == -1) {
-                printf(FILE_NOT_FOUND);
+                fprintf(stderr, FILE_NOT_FOUND);
                 return 1; // error
             }
             break;
         case 'o':
             if ((file_out = tree_out = open(optarg, O_WRONLY | O_TRUNC | O_CREAT)) == -1) {
-                printf(FILE_NOT_FOUND);
+                fprintf(stderr, FILE_NOT_FOUND);
                 return 1; // error
             }
             break;
@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
 
     // Verify magic number
     if (h.magic != MAGIC) {
-        printf("not a magic number\n");
+        fprintf(stderr, "not a magic number\n");
         close(file_in);
         close(file_out);
         return 0;
@@ -95,11 +95,12 @@ int main(int argc, char **argv) {
             curr = node_right(curr);
         }
 
-        if (node_left(curr) == NULL) {
+        if (curr->left == NULL) {
             buf[buf_idx++] = node_symbol(curr);
             curr = root;
 
             if (buf_idx >= BLOCK) {
+                /* printf("printing %lu\n", buf_idx); */
                 write_bytes(file_out, buf, buf_idx);
                 buf_idx = 0;
             }
@@ -113,10 +114,12 @@ int main(int argc, char **argv) {
     if (verbose) {
         uint64_t uncomp_size = bytes_written;
         uint64_t comp_size = bytes_read;
-        printf("Uncompressed file size: %lu bytes\n", uncomp_size);
-        printf("Compressed file size: %lu bytes\n", comp_size);
-        printf("Space saving: %2.2f%%\n", 100 * (1 - ((double) comp_size / (double) uncomp_size)));
+        fprintf(stderr, "Uncompressed file size: %lu bytes\n", uncomp_size);
+        fprintf(stderr, "Compressed file size: %lu bytes\n", comp_size);
+        fprintf(stderr, "Space saving: %2.2f%%\n",
+            100 * (1 - ((double) comp_size / (double) uncomp_size)));
     }
+
     delete_tree(&root);
     close(file_in);
     close(file_out);

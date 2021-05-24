@@ -38,32 +38,32 @@ int main(int argc, char **argv) {
     int opt = 0;
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
         switch (opt) {
-            case 'h':
-                printf(HELP);
-                return 0;
-                break;
-            case 'v': verbose = true; break;
-            case 'i':
-                      if ((file_in = open(optarg, O_RDONLY)) == -1) {
-                          printf(FILE_NOT_FOUND);
-                          return 1; // error
-                      }
-                      break;
-            case 'o':
-                      if ((file_out = tree_out = open(optarg, O_WRONLY | O_TRUNC | O_CREAT)) == -1) {
-                          printf(FILE_NOT_FOUND);
-                          return 1; // error
-                      }
-                      break;
-            default: return 1; // error
+        case 'h':
+            fprintf(stderr, HELP);
+            return 0;
+            break;
+        case 'v': verbose = true; break;
+        case 'i':
+            if ((file_in = open(optarg, O_RDONLY)) == -1) {
+                fprintf(stderr, FILE_NOT_FOUND);
+                return 1; // error
+            }
+            break;
+        case 'o':
+            if ((file_out = tree_out = open(optarg, O_WRONLY | O_TRUNC | O_CREAT)) == -1) {
+                fprintf(stderr, FILE_NOT_FOUND);
+                return 1; // error
+            }
+            break;
+        default: return 1; // error
         }
     }
 
     // Create tempfile if needed
-    if (file_in == STDIN_FILENO) {
-        FILE* temp = tmpfile();
+    if (lseek(file_in, 0, SEEK_CUR) == -1) {
+        FILE *temp = tmpfile();
         if (temp == NULL) { // If not created successfully
-            return 1; 
+            return 1;
         }
         file_temp = fileno(temp);
     }
@@ -88,7 +88,6 @@ int main(int argc, char **argv) {
         // Fill tempfile with original file
         if (file_temp > 0) {
             write_bytes(file_temp, buf, length);
-            printf("writing to tempfile");
         }
 
         for (int i = 0; i < length; i++) {
@@ -102,7 +101,7 @@ int main(int argc, char **argv) {
     Node *root = build_tree(hist);
 
     // Construct header
-    Header h = { MAGIC, statbuf.st_mode, tree_size, statbuf.st_size };
+    Header h = { MAGIC, statbuf.st_mode, tree_size, uncomp_size };
     write_header(file_out, &h);
 
     // Create codes
@@ -121,14 +120,11 @@ int main(int argc, char **argv) {
     }
 
     // Encode
-    if (file_temp <= 0) {
-        lseek(file_in, 0, SEEK_SET);
-    } else {
+    if (file_temp > 0) {
         file_in = file_temp;
-        printf("reading from tempfile");
     }
 
-    length = 0;
+    lseek(file_in, 0, SEEK_SET);
     while ((length = read_bytes(file_in, buf, BLOCK)) > 0) {
         for (int i = 0; i < length; i++) {
             write_code(file_out, &table[buf[i]]);
@@ -138,10 +134,11 @@ int main(int argc, char **argv) {
 
     // Print statistics
     if (verbose) {
-        uint64_t comp_size = bytes_written;
-        printf("Uncompressed file size: %lu bytes\n", uncomp_size);
-        printf("Compressed file size: %lu bytes\n", comp_size);
-        printf("Space saving: %2.2f%%\n", 100 * (1 - ((double) comp_size / (double) uncomp_size)));
+        uint64_t comp_size = file_temp > 0 ? bytes_written - uncomp_size : bytes_written;
+        fprintf(stderr, "Uncompressed file size: %lu bytes\n", uncomp_size);
+        fprintf(stderr, "Compressed file size: %lu bytes\n", comp_size);
+        fprintf(stderr, "Space saving: %2.2f%%\n",
+            100 * (1 - ((double) comp_size / (double) uncomp_size)));
     }
 
     // Clean exit

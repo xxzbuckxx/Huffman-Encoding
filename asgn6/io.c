@@ -60,6 +60,12 @@ int write_bytes(int outfile, uint8_t *buf, int nbytes) {
     return b_written;
 }
 
+//
+// Write a Header to a file
+//
+// infile: file to write to
+// h: a pointer to the Header
+//
 int read_header(int infile, Header *h) {
     uint64_t b_read = 0; // bytes read so far
     uint64_t last_read = 0; // bytes read on last
@@ -75,6 +81,12 @@ int read_header(int infile, Header *h) {
     return b_read;
 }
 
+//
+// Reads a Header to a file
+//
+// infile: file to write to
+// h: a pointer to the Header
+//
 int write_header(int outfile, Header *h) {
     uint64_t b_written = 0; // bytes written so far
     uint64_t last_written = 0; // bytes written on last
@@ -98,12 +110,12 @@ int write_header(int outfile, Header *h) {
 //
 bool read_bit(int infile, uint8_t *bit) {
     static uint8_t buf[BLOCK];
-    static uint64_t read = 0;
-    static uint64_t buf_idx = 0;
+    static uint64_t b_read = 0;
+    static uint64_t buf_idx = 1;
     static uint8_t buf_bit = 0;
 
-    if ((buf_idx == 0 && buf_bit == 0) || buf_idx >= read) {
-        if ((read = read_bytes(infile, buf, BLOCK)) == 0) {
+    if (buf_idx >= b_read) {
+        if ((b_read = read_bytes(infile, buf, BLOCK)) == 0) {
             return false;
         }
         buf_bit = 0;
