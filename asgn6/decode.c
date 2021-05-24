@@ -120,6 +120,7 @@ int main(int argc, char **argv) {
             100 * (1 - ((double) comp_size / (double) uncomp_size)));
     }
 
+    // Clean exit
     delete_tree(&root);
     close(file_in);
     close(file_out);

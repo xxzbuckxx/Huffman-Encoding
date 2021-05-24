@@ -84,6 +84,12 @@ uint32_t pq_size(PriorityQueue *q) {
     return (q && q->min_heap) ? q->top - 1 : 0; //if PriorityQueue exists and has items
 }
 
+// 
+// Adds a node the PriorityQueue
+//
+// q: the PriorityQueue to add to
+// n: node to add
+//
 bool enqueue(PriorityQueue *q, Node *n) {
     if (pq_full(q)) {
         return false;
@@ -106,6 +112,12 @@ bool enqueue(PriorityQueue *q, Node *n) {
     return true;
 }
 
+// 
+// Pops a node the PriorityQueue
+//
+// q: the PriorityQueue to pop from
+// n: address to store popped node
+//
 bool dequeue(PriorityQueue *q, Node **n) {
     if (pq_size(q) == 0) {
         return false;
@@ -146,9 +158,12 @@ bool dequeue(PriorityQueue *q, Node **n) {
     return true;
 }
 
+// 
+// Prints a PriorityQueue for debugging
+//
+// q: an address to a PriorityQueue to print
 void pq_print(PriorityQueue *q) {
     for (uint32_t i = 1; i < q->top; i += 1) { // iterate through item indices
-        /* node_print(q->min_heap[i]); */
         printf("%ld", node_frequency(q->min_heap[i]));
         if (i + 1 != q->top) { // do not print newline for last case
             printf(" ");
