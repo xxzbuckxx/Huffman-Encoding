@@ -57,7 +57,7 @@ int write_bytes(int outfile, uint8_t *buf, int nbytes) {
     }
 
     bytes_written += (uint64_t) b_written;
-    return bytes_written;
+    return b_written;
 }
 
 int read_header(int infile, Header *h) {
@@ -102,10 +102,7 @@ bool read_bit(int infile, uint8_t *bit) {
     static uint64_t buf_idx = 0;
     static uint8_t buf_bit = 0;
 
-    /* printf("reading bit\n"); */
-
     if ((buf_idx == 0 && buf_bit == 0) || buf_idx >= read) {
-        /* printf("filling buffer bit\n"); */
         if ((read = read_bytes(infile, buf, BLOCK)) == 0) {
             return false;
         }

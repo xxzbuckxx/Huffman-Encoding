@@ -28,6 +28,7 @@ int main(int argc, char **argv) {
 
     // File descriptors
     int file_in = STDIN_FILENO;
+    int file_temp = -1;
     int file_out = tree_out = STDOUT_FILENO;
     struct stat statbuf; // file permissions
 
@@ -37,29 +38,38 @@ int main(int argc, char **argv) {
     int opt = 0;
     while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
         switch (opt) {
-        case 'h':
-            printf(HELP);
-            return 0;
-            break;
-        case 'v': verbose = true; break;
-        case 'i':
-            if ((file_in = open(optarg, O_RDONLY)) == -1) {
-                printf(FILE_NOT_FOUND);
-                return 1; // error
-            }
-            break;
-        case 'o':
-            if ((file_out = tree_out = open(optarg, O_WRONLY | O_TRUNC | O_CREAT)) == -1) {
-                printf(FILE_NOT_FOUND);
-                return 1; // error
-            }
-            break;
-        default: return 1; // error
+            case 'h':
+                printf(HELP);
+                return 0;
+                break;
+            case 'v': verbose = true; break;
+            case 'i':
+                      if ((file_in = open(optarg, O_RDONLY)) == -1) {
+                          printf(FILE_NOT_FOUND);
+                          return 1; // error
+                      }
+                      break;
+            case 'o':
+                      if ((file_out = tree_out = open(optarg, O_WRONLY | O_TRUNC | O_CREAT)) == -1) {
+                          printf(FILE_NOT_FOUND);
+                          return 1; // error
+                      }
+                      break;
+            default: return 1; // error
         }
     }
 
-    fstat(file_in, &statbuf);
+    // Create tempfile if needed
+    if (file_in == STDIN_FILENO) {
+        FILE* temp = tmpfile();
+        if (temp == NULL) { // If not created successfully
+            return 1; 
+        }
+        file_temp = fileno(temp);
+    }
+
     // Transfer File permissions
+    fstat(file_in, &statbuf);
     if (file_in != STDIN_FILENO && file_out != STDOUT_FILENO) {
         fchmod(file_out, statbuf.st_mode);
     }
@@ -73,7 +83,14 @@ int main(int argc, char **argv) {
     hist[255] = 1;
     uint8_t buf[BLOCK] = { 0 };
     int length = 0;
+
     while ((length = read_bytes(file_in, buf, BLOCK)) > 0) {
+        // Fill tempfile with original file
+        if (file_temp > 0) {
+            write_bytes(file_temp, buf, length);
+            printf("writing to tempfile");
+        }
+
         for (int i = 0; i < length; i++) {
             hist[buf[i]]++; // increment frequency of character in histogram
         }
@@ -104,7 +121,12 @@ int main(int argc, char **argv) {
     }
 
     // Encode
-    lseek(file_in, 0, SEEK_SET);
+    if (file_temp <= 0) {
+        lseek(file_in, 0, SEEK_SET);
+    } else {
+        file_in = file_temp;
+        printf("reading from tempfile");
+    }
 
     length = 0;
     while ((length = read_bytes(file_in, buf, BLOCK)) > 0) {
@@ -125,6 +147,7 @@ int main(int argc, char **argv) {
     // Clean exit
     delete_tree(&root);
     close(file_in);
+    close(file_temp);
     close(file_out);
 
     return 0;

@@ -108,8 +108,15 @@ int main(int argc, char **argv) {
 
     // Flush decoded bytes
     write_bytes(file_out, buf, buf_idx);
-    /* uint64_t uncomp_size = bytes_read; */
 
+    // Print statistics
+    if (verbose) {
+        uint64_t uncomp_size = bytes_written;
+        uint64_t comp_size = bytes_read;
+        printf("Uncompressed file size: %lu bytes\n", uncomp_size);
+        printf("Compressed file size: %lu bytes\n", comp_size);
+        printf("Space saving: %2.2f%%\n", 100 * (1 - ((double) comp_size / (double) uncomp_size)));
+    }
     delete_tree(&root);
     close(file_in);
     close(file_out);

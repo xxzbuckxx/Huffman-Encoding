@@ -20,8 +20,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{%
-    \textbf{Assignment 6 \\ 
-        Huffman Coding \\
+	\textbf{Assignment 6 \\ 
+		Huffman Coding \\
 \large DESIGN DOCUMENT} }
 \author{Zack Traczyk \\ CSE13S - Spring 2021}
 \date{Due: May 23\textsuperscript{th} at 11:59 pm}
@@ -39,7 +39,7 @@ Implement static lossless file compression using Huffman encoding.
 \section{Given}
 
 \begin{itemize}
-    \item{Header files for definitions, header, node, priority queue, code, io, stack, Huffman}
+	\item{Header files for definitions, header, node, priority queue, code, io, stack, Huffman}
 	\item{C file for entropy}
 \end{itemize}
 
@@ -59,20 +59,85 @@ right child, an 8-bit unsigned integer for its symbol, and a 64-bit unsigned int
 for its frequency. Nodes are used to construct a Huffman tree which is required for
 encoding.
 
+Nodes are used to create a tree and as such require a couple of functions
+to interface with them:
+
+\begin{itemize}
+	\item{\code{node\_create}: creates a node given a symbol and frequecy. Sets the left and 
+		right children to \code{NULL}.}
+	\item{\code{node\_delete}: deletes a node by freeing allocated memory and setting its 
+		pointer to \code{NULL}.}
+	\item{\code{node\_join}: joins to nodes given their pointers under a parent node with a 
+			symbol of '\$' and a frequency equal to the childrens the sum of the 
+		left and right frequencies.}
+	\item{\code{node\_print}: this function is not utilized during encoding or decoding
+		but is helpful for debugging}
+
+\end{itemize}
+
+This functions are all only a few lines, and therefore are trivial to implement
+given the explanations above.
+
 \subsection{Stack}
 
 Stacks are implemented in \code{stack.c}. A stack is a structure that contains an
 array of pointers to Nodes (the elements the stack holds), an unsigned 32-bit integer
 to the next empty value in the stack, and an unsigned 32-bit integer that stores the
-total capacity of the queue.
+total number of nodes that can be stored.
+
+A stack can be popped from and push to, and its size can be tested. Therefore the 
+following functions are implemented for a stack:
+
+\begin{itemize}
+	\item{\code{stack\_create}: creates a stack given its capacity (how many elements it can
+		hold).}
+	\item{\code{stack\_delete}: deletes a stack by freeing allocated memory and setting its 
+		pointer to \code{NULL}.}
+	\item{\code{stack\_empty}: since a stack keeps track of the top element to know where to
+		push/pop a value, a stack is therefore empty when the \code{top} is 0}
+	\item{\code{stack\_full}: a stack is then full when the \code{top} is equal to the capacity}
+	\item{\code{stack\_size}: since new Nodes are inserted from \code{top}, the stack size
+		is equal to \code{top}.}
+	\item{\code{stack\_push}: to push a new element, there must first be room. This is checked
+			by calling \code{stack\_full} and returning false if \code{stack\_full} returns true.
+			If there is room in the stack, the item is added at index \code{top} and \code{top} is
+		then incremented.}
+	\item{\code{stack\_pop}: when elements are popped the stack checks first if there is
+			anything to pop using \code{stack\_empty}. If there are elements, \code{top} is
+			decremented and the pointer to a Node at the now decremented \code{top} is passed
+		to a Node pointer given as a parameter.} 
+	\item{\code{stack\_print}: this function is not utilized during encoding or decoding
+		but is helpful for debugging}
+\end{itemize}
 
 \subsection{Priority Queue}
 
-Priority queues are implemented in \code{pq.c} using a min heap. A priority queue
+A priority queues is implemented in \code{pq.c} using a min heap. A priority queue
 is a structure that contains an array of pointers to Nodes (this is where elements
 that are enqueued and dequeued are stored), an unsigned 32-bit integer to the next
-empty value in the stack, and an unsigned 32-bit integer that stores the total
+empty value in the min heap, and an unsigned 32-bit integer that stores the total
 capacity of the queue.
+
+HEAP EXPLANATION HERE
+
+\begin{itemize}
+	\item{\code{pq\_create}: creates a priority queue given its capacity (how many elements it can
+		hold).}
+	\item{\code{pq\_delete}: deletes a pq by freeing allocated memory and setting its 
+		pointer to \code{NULL}.}
+	\item{\code{pq\_node\_frequency}: this is a helper function to help with enqueuing
+			and dequeuing, it is not publicly accessible. All this function does is given a pointer
+			to a priority queue and an index, it calls \code{node\_frequency} on that Node and returns
+		the value.}
+	\item{\code{pq\_empty}: a priority queue is similar to the \code{Stack} datatype and is
+		therefore empty when the \code{top} is 0}
+	\item{\code{pq\_full}: a priority queue is then full when the \code{top} is equal to the capacity}
+	\item{\code{pq\_size}: the priority queue size is equal to \code{top}.}
+	\item{\code{enqueue} }
+	\item{\code{dequeue} }
+	\item{\code{pq\_print}: this function is not utilized during encoding or decoding
+		but is helpful for debugging}
+\end{itemize}
 
 \section{Programs}
 
@@ -82,14 +147,40 @@ with the encoding and decoding.
 
 \subsection{IO}
 
-Two global variables are defined in \code{io.c}: \code{bytes read} and \code{bytes written}.
+Two global variables are defined in \code{io.c}: \code{bytes\_read} and \code{bytes\_written}.
 These variables track how many times bytes have been read and written to/ from a file.
-Additionally, there are four main io functions: read bytes, write bytes, read bit, write codes.
+Additionally, io needs to be handled for six main functions: reading bytes, writing bytes,
+reading the header, writing the header, reading a bit, and writing codes.
+
+Reading and writing bytes and the header are almost identical. In \vref{read_main} read
+functionality is shown but write functionality is identical and header reading and writing
+only requires the size of the read/write call to be equal to the size of the \code{Header}
+structure.
+
+\begin{algorithm}
+	bytes read = 0\;
+	last bytes read = 0\;
+
+	\While{(bytes read += read(from infile to buffer for nbytes) is less than bytes to read}{
+		\If{last read is equal to bytes read}{
+			Break\;
+		}
+		last bytes read = bytes read\;
+	}
+
+	global bytes read += bytes read\;
+	\Return{bytes read}
+	\caption{Basic Reading}\label{read_main}
+\end{algorithm}
+
+
+
+\subsection{Huffman Trees}
 
 \subsection{Encode}
 
 \begin{itemize}
-    \item{-h : Command line options}
+	\item{-h : Command line options}
 	\item{-i \code{infile} : The file containing bytes to be encoded (default is \code{stdin})}
 	\item{-o \code{outfile} : The output file to store encoded bytes (default is \code{stdout})}
 	\item{-v : Prints compression statists of the encoding process to \code{stderr}}
@@ -98,9 +189,9 @@ Additionally, there are four main io functions: read bytes, write bytes, read bi
 \subsection{Decode}
 
 \begin{itemize}
-    \item{-h : Command line options }
+	\item{-h : Command line options }
 	\item{-i \code{infile} : The file containing bytes to be decoded (default is \code{stdin})}
-		\item{-o \code{outfile} : The output file to store decoded bytes (default is \code{stdout})}
+	\item{-o \code{outfile} : The output file to store decoded bytes (default is \code{stdout})}
 	\item{-v : Prints statists of the decoding process to \code{stderr}}
 \end{itemize}
 
@@ -132,7 +223,7 @@ tree. Finally the Huffman coding happens as the tree is traversed and codes
 are assigned to all the characters.\vref{encode}.
 
 \begin{algorithm}
-    \caption{Encode}\label{encode}
+	\caption{Encode}\label{encode}
 \end{algorithm}
 
 \subsection{Decode}
@@ -142,7 +233,7 @@ and decoded.
 The pseduocode is shown in \vref{decode}.
 
 \begin{algorithm}
-    \caption{Decode}\label{decode}
+	\caption{Decode}\label{decode}
 \end{algorithm}
 
 \end{document}
