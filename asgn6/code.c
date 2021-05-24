@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 //
-// Initalizes a Code
+// Initializes a Code
 //
 Code code_init(void) {
     Code c = { 0, { 0 } };
@@ -13,7 +13,7 @@ Code code_init(void) {
 //
 // Size of a Code
 //
-// c: an adress to a Code
+// c: an address to a Code
 //
 uint32_t code_size(Code *c) {
     return c->top; // should be bits
@@ -54,7 +54,7 @@ bool code_push_bit(Code *c, uint8_t bit) {
 }
 
 //
-// Returns true if bit was sucessfully poped from Code
+// Returns true if bit was successfully popped from Code
 //
 // c: an address to a code
 // bit: an address to store the popped bit

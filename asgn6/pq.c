@@ -84,7 +84,7 @@ uint32_t pq_size(PriorityQueue *q) {
     return (q && q->min_heap) ? q->top - 1 : 0; //if PriorityQueue exists and has items
 }
 
-// 
+//
 // Adds a node the PriorityQueue
 //
 // q: the PriorityQueue to add to
@@ -112,7 +112,7 @@ bool enqueue(PriorityQueue *q, Node *n) {
     return true;
 }
 
-// 
+//
 // Pops a node the PriorityQueue
 //
 // q: the PriorityQueue to pop from
@@ -158,7 +158,7 @@ bool dequeue(PriorityQueue *q, Node **n) {
     return true;
 }
 
-// 
+//
 // Prints a PriorityQueue for debugging
 //
 // q: an address to a PriorityQueue to print

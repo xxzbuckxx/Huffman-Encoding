@@ -118,8 +118,6 @@ that are enqueued and dequeued are stored), an unsigned 32-bit integer to the ne
 empty value in the min heap, and an unsigned 32-bit integer that stores the total
 capacity of the queue.
 
-HEAP EXPLANATION HERE
-
 \begin{itemize}
 	\item{\code{pq\_create}: creates a priority queue given its capacity (how many elements it can
 		hold).}
@@ -136,6 +134,42 @@ HEAP EXPLANATION HERE
 	\item{\code{enqueue} }
 	\item{\code{dequeue} }
 	\item{\code{pq\_print}: this function is not utilized during encoding or decoding
+		but is helpful for debugging}
+\end{itemize}
+
+\subsection{Codes}
+
+Huffman compression works by assigning codes to symbols where the most used symbols have the
+shortest codes. These codes are implemented using a structure containing an unsigned 32 bit
+integer to track the top of the code, and an array of unisgned 8 bit integers to store the
+bits in the code like a stack. Since elements in a code are bits stored inside array elements, \code{top}
+tracks the top bit not the top index. Codes are constructed by traversing the tree left = 0 and right = 1 until
+a leaf is found at which the order of lefts and rights, 1s and 0s is the code. This is explained
+further in subsection \vref{huffman}. However, this functionality dictates that a code
+needs to be able to pop and push bits as well as check the size.
+
+The following functions are implemented in \code{code.c}:
+
+\begin{itemize}
+	\item{\code{code\_create}: creates a code and initializes it to 0.
+			The code structure is defined globally so its members can be accessed. The size
+		of a code is constant so there is no need to allocate space at runtime}
+	\item{\code{code\_delete}: deletes a code by freeing allocated memory and setting its 
+		pointer to \code{NULL}.}
+	\item{\code{code\_empty}: since a code keeps track of the top element to know where to push/pop
+		a value, a stack is therefore empty when the \code{top} is 0}
+	\item{\code{code\_full}: a code is then full when the $\code{top} / 8$ is equal to the
+		capacity (\code{MAX\_CODE\_SIZE})}
+	\item{\code{code\_size}: the code size is equal to \code{top}.}
+	\item{\code{code\_push}: to push a new element, there must first be room. This is checked
+			by calling \code{code\_full} and returning false if \code{code\_full} returns true.
+			If there is room in the stack, the new bit is inserted in the array at the $\code{top} / 8$ element
+		at the $\code{top} \% 8$bit.}
+	\item{\code{code\_pop}: when elements are popped the stack checks first if there is
+			anything to pop using \code{code\_empty}. If there are elements, \code{top} is
+			decremented and the pointer to a bit at the now decremented \code{top} is passed
+		to a Node pointer given as a parameter.} 
+	\item{\code{code\_print}: this function is not utilized during encoding or decoding
 		but is helpful for debugging}
 \end{itemize}
 
@@ -175,7 +209,10 @@ structure.
 
 
 
-\subsection{Huffman Trees}
+\subsection{Huffman Trees}\label{huffman}
+
+Huffman trees utilize a few different functions when encoding or decoding. These functions
+mainly deal with constructing, deleteing, reconstructing, and traversing Huffman trees.
 
 \subsection{Encode}
 
@@ -214,15 +251,64 @@ Refer to execute for how the algorithm works.
 
 \subsection{Encode}
 
-Compressing a file requires a few steps. First, a histogram is constructed of the
-most used characters. Once each character has a frequency, the histogram elements
+First, the infile is checked to see if it is seekable. Since Huffman encoding
+requires two passes, the file must be read twice. This is impossible for piped input,
+therefore a tempfile is made whenever the input is unseekable. Compressing a file 
+requires a few steps. First, a histogram is constructed of the
+most used characters. If a tempfile has been initalized, then the parsed characters
+and then written to the tempfile to be read on the second pass. Once each character
+has a frequency, the histogram elements
 are converted to nodes and enqueued into a priority queue. Then, two nodes are 
 popped off at at time and joined together and queued back into the priority
 queue until only one node remains. This last node is the root to the Huffman
 tree. Finally the Huffman coding happens as the tree is traversed and codes
-are assigned to all the characters.\vref{encode}.
+are assigned to all the characters. This pseudocode for this procedure
+can be seen in \vref{encode}.
 
 \begin{algorithm}
+	\If{not seekable}{
+		create tempfile\;
+	}
+	call fstat on infile and assign to statbuf\;
+	\If{filein is not stdin and fileout is not stdout}{
+		modify permissions of outfile to match infile\;
+	}
+
+	initalize a histogram of length ALPHABET\;
+	histogram at 0 is 1\;
+	histogram at 255 is 1\;
+	initalize read buffer\;
+
+	\While{length from read\_bytes(read from filein to buffer with size of BLOCK)
+		is greater than 0}{
+		\If{tempfile exists}{
+			write\_bytes(wrte to filout from buffer for BLOCK bytes)\;
+		}
+		\For{every read byte in buffer}{
+			increment corresponding histogram array element to buffer charater\;
+		}
+	}
+
+	root of Huffman tree = build\_tree(from histogram)\;
+	create a header and write to fileout\;	
+	initalize a table with empty codes\;
+	build\_codes(root, from table)\;
+	write the tree to outfile\;
+
+	\If{tempfile used}{
+		set filein to tempfile\;
+	}
+
+	\While{length from read\_bytes(read from filein to buffer with size of BLOCK)
+		is greater than 0}{
+		\For{every read byte in buffer}{
+			write\_code(fileout, from code table of the current character)\;
+		}
+	}
+
+	print statistics if verbose\;
+	close files and free allocated space\;
+
 	\caption{Encode}\label{encode}
 \end{algorithm}
 
@@ -230,7 +316,6 @@ are assigned to all the characters.\vref{encode}.
 
 Decode is (unsurprisingly) the opposite of encode. Codes are read from the file
 and decoded.
-The pseduocode is shown in \vref{decode}.
 
 \begin{algorithm}
 	\caption{Decode}\label{decode}
