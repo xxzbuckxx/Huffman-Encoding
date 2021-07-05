@@ -4,9 +4,9 @@ Create lossless static compression using Huffman trees.
 
 # How to Build
 
-Execute the command `make` and it should compile using the provided makefile.
+Execute the command `make` and it should compile using the provided makefile. Programs were created and tested on Ubuntu 20.04.
 
-Run the compiled binary with `./encode` or `./decode` or `./entropy`
+Run the compiled binary with `./encode` or `./decode`
 
 #### Options
 
